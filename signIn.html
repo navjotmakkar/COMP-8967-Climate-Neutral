@@ -11,6 +11,7 @@
             margin: 0;
             padding: 0;
             display: flex;
+            flex-direction: column; /* Set the main content to a vertical column */
             justify-content: center;
             align-items: center;
             min-height: 100vh;
@@ -18,14 +19,13 @@
 
         .container {
             max-width: 400px;
-            padding: 20px;
-            padding-top: 20px;
-            padding-bottom: 25px;
+            padding: 60px;
             background-color: #ffffff;
             border: 2px solid #ccc;
             border-radius: 5px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
             text-align: center;
+            margin-top: 20px; /* Adjust spacing from the image */
         }
 
         h1 {
@@ -35,7 +35,7 @@
         input[type="text"],
         input[type="password"],
         input[type="email"] {
-            width: 80%;
+            width: 100%;
             padding: 10px;
             margin-bottom: 15px;
             border: 1px solid #ccc;
@@ -43,7 +43,7 @@
         }
 
         input[type="submit"] {
-            width: 30%;
+            width: 100%;
             padding: 10px;
             background-color: #000;
             color: #fff;
@@ -64,10 +64,27 @@
             text-decoration: none;
             color: #007BFF;
         }
+
+        .home-text {
+            font-size: 18px;
+        }
+        
+        .image-container {
+            margin-top: 10px; /* Adjust the spacing from the text */
+        }
+
+        .image-container img {
+            max-width: 100px; /* Adjust the image size as needed */
+        }
     </style>
 </head>
 <body>
-    
+    <div class="home-text">
+        Multi-Objective Decision Making Application
+    </div>
+    <div class="image-container">
+        <img src="screenshot 2023-09-25 181251-200h.png" alt="Image">
+    </div>
     <div class="container">
         <h1>Sign In</h1><br>
         <form>
@@ -75,8 +92,8 @@
             <input type="password" placeholder="Password" required><br><br>
             <input type="submit" value="Sign In">
         </form><br>
-        <a href="#">Forgot Password?</a><br><br>
-        <a href="#">Create New Account</a>
+        <a href="forget-password.html">Forgot Password?</a><br><br>
+        <a href="signup.html">Create New Account</a>
     </div>
 </body>
 </html>
