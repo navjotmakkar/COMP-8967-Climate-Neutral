@@ -1,0 +1,70 @@
+/* Color Variables */
+:root {
+  --primary-color: #007bff;
+  --secondary-color: #333;
+  --success-color: #28a745;
+  --danger-color: #dc3545;
+  --warning-color: #ffc107;
+  --info-color: #17a2b8;
+}
+
+/* Font Size Variables */
+:root {
+  --small-font-size: 14px;
+  --medium-font-size: 16px;
+  --large-font-size: 18px;
+  --e-x-font-size: 20px;
+  --e-xx-font-size: 22px;
+  --e-xxx-font-size: 24px;
+
+
+}
+
+/* Common Classes */
+* {
+  margin: 0px;
+  padding: 0px;
+}
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.heading {
+  font-size: var(--e-xxx-font-size);
+  margin-bottom: 20px;
+}
+
+input {
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid var(--secondary-color);
+  border-radius: 3px;
+  font-size: var(--medium-font-size);
+}
+
+.btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: var(--medium-font-size);
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  color: #fff;
+}
+
+.btn-ghost {
+  background-color: transparent;
+  color: var(--primary-color);
+  border: 1px solid var(--primary-color);
+}
+
+.link {
+  text-decoration: none;
+  color: var(--primary-color);
+  font-size: var(--small-font-size);
+}
