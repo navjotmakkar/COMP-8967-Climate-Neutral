@@ -51,45 +51,104 @@
         <input type="file" id="csvFile" accept=".csv" />
         <button class="btn btn-primary" id="convertButton">Upload</button>
       </div>
-      <button class="modal-btn js-modal-btn">Add Category</button>
+
+      <button class="btn btn-secondary modal-btn js-modal-btn">
+        Add Category
+      </button>
+
+      <div class="all-categories js-all-categories">
+        <p class="js-no-categories">No Categories available</p>
+        <!-- <label class="category-tab">abc</label> -->
+      </div>
+
+      <div class="scenarios-table-wrapper js-scenarios-table">
+        <table class="scenarios-table">
+          <thead></thead>
+          <tbody class="js-table-body">
+            <!-- Table body will be populated dynamically using JavaScript -->
+          </tbody>
+        </table>
+        <button class="btn btn-secondary modal-btn js-modal-add-scenario-btn">
+          Add Scenario
+        </button>
+      </div>
+
+      <button class="btn btn-secondary js-modma-btn">
+        Perform M-O-D-M
+      </button>
+
+      <div class="ranking-table-wrapper js-ranking-table">
+        <table class="scenarios-table">
+          <thead></thead>
+          <tbody class="js-table-body">
+            <!-- Table body will be populated dynamically using JavaScript -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="modal js-add-scenario-modal">
+      <div class="modal-content category-creation-model js-modal-content">
+        <span class="close js-add-scenario-close">&times;</span>
+        <form class="category-creation-form js-add-scenario-form">
+          <div class="form-element">
+            <label for="scenarioName" class="js-label">Scenario Name</label>
+            <input type="text" id="scenarioName" class="js-input" required />
+          </div>
+          <div class="js-add-scenario-form-container"></div>
+
+          <button type="submit" class="btn btn-primary js-add-scenario-submit-btn">
+            Submit
+          </button>
+        </form>
+      </div>
     </div>
 
     <div class="modal js-modal" id="myModal">
-      <div class="modal-content js-modal-content">
+      <div class="modal-content category-creation-model js-modal-content">
         <span class="close js-close">&times;</span>
-        <form class="js-category-creation-form">
-        
+        <form class="category-creation-form js-category-creation-form">
           <div class="form-element">
             <label for="categoryName" class="js-label">Category Name:</label>
             <input type="text" id="categoryName" class="js-input" required />
           </div>
 
           <div class="form-element">
-            <label for="categoryWeight" class="js-label">Category Weight:</label>
+            <label for="categoryWeight" class="js-label"
+              >Category Weight:</label
+            >
             <input
               type="number"
               id="categoryWeight"
               class="js-input"
-              step="0.1"
+              step="any"
+              min="0"
+              max="1"
               required
             />
           </div>
           <div class="form-element">
-            <label for="categoryDirection" class="js-label">Category Direction:</label>
+            <label for="categoryDirection" class="js-label"
+              >Category Direction:</label
+            >
             <select id="categoryDirection" class="js-select" required>
               <option value="positive">Positive</option>
               <option value="negative">Negative</option>
             </select>
           </div>
           <div class="form-element">
-            <label for="evaluationType" class="js-label">Category Evaluation Type:</label>
+            <label for="evaluationType" class="js-label"
+              >Category Evaluation Type:</label
+            >
             <select id="evaluationType" class="js-select" required>
-              <option value="ordinal">Ordinal</option>
-              <option value="linear">Linear</option>
+              <option value="numerical">Numerical</option>
+              <!-- <option value="linear">Linear</option> -->
               <option value="descriptive">Descriptive</option>
             </select>
-          <div class="form-element">
-          <button type="submit" class="js-submit-btn">Submit</button>
+          </div>
+          <button type="submit" class="btn btn-primary js-submit-btn">
+            Submit
+          </button>
         </form>
       </div>
     </div>

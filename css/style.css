@@ -82,19 +82,31 @@ body {
   background-color: rgba(0,0,0,0.7);
 }
 
+.all-categories{
+  display: flex;
+  gap: 5px;
+  padding: 10px;
+  border: 1px solid black;
+  border-radius: 5px;
+}
+
 .modal-content {
+  position: relative;
   background-color: #fefefe;
   margin: 15% auto;
-  padding: 20px;
+  padding: 30px;
   border: 1px solid #888;
   width: fit-content;
 }
 
 .close {
+  position: absolute;
   color: #aaa;
   float: right;
   font-size: 28px;
   font-weight: bold;
+  right: 10px;
+  top: 0;
 }
 
 .close:hover,
@@ -102,4 +114,9 @@ body {
   color: black;
   text-decoration: none;
   cursor: pointer;
+}
+
+
+.hidden{
+  display: none;
 }
