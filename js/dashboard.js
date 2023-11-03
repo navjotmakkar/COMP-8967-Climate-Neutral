@@ -2,7 +2,6 @@ import { firebaseConfig } from "./constants.js";
 
 // Initialize Firebase
 const firebaseApp = firebase.initializeApp(firebaseConfig);
-
 const userEmail = document.getElementById("user-email");
 const logoutBtn = document.getElementById("user-logout");
 
@@ -32,20 +31,41 @@ const handleLogout = () => {
 
 logoutBtn.addEventListener("click", handleLogout);
 
-var modal = document.querySelector(".modal");
-var trigger = document.querySelector(".trigger");
-var closeButton = document.querySelector(".close-button");
+const modalBtn = document.querySelector('.js-modal-btn');
+const modal = document.querySelector('.js-modal');
+const closeBtn = document.querySelector('.js-close');
+const submitBtn = document.querySelector('.js-submit-btn');
 
-function toggleModal() {
-    modal.classList.toggle("show-modal");
-}
+modalBtn.addEventListener('click', () => {
+    modal.style.display = 'block';
+});
 
-function windowOnClick(event) {
+closeBtn.addEventListener('click', () => {
+    modal.style.display = 'none';
+});
+
+window.addEventListener('click', (event) => {
     if (event.target === modal) {
-        toggleModal();
+        modal.style.display = 'none';
     }
-}
+});
 
-trigger.addEventListener("click", toggleModal);
-closeButton.addEventListener("click", toggleModal);
-window.addEventListener("click", windowOnClick);
+submitBtn.addEventListener('click', (e) => {
+  e.preventDefault()
+    const categoryName = document.getElementById('categoryName').value;
+    const categoryWeight = parseFloat(document.getElementById('categoryWeight').value);
+    const categoryDirection = document.getElementById('categoryDirection').value;
+    const evaluationType = document.getElementById('evaluationType').value;
+
+    // Perform validation if necessary
+    // For example, check if categoryWeight is a valid float
+
+    // Do something with the input data, for example, display it in the console
+    console.log('Category Name:', categoryName);
+    console.log('Category Weight:', categoryWeight);
+    console.log('Category Direction:', categoryDirection);
+    console.log('Evaluation Type:', evaluationType);
+
+    // Close the modal after processing the input
+    modal.style.display = 'none';
+});

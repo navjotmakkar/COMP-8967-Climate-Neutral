@@ -29,6 +29,7 @@ function convertToJSON() {
         }
 
         const jsonData = JSON.stringify(data, null, 2);
+        localStorage.setItem('scenario', jsonData)
         console.log(jsonData);
     };
 

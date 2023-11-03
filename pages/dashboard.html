@@ -1,52 +1,100 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../css/style.css" />
+    <link rel="stylesheet" href="../css/dashboard.css" />
+    <title>Dashboard</title>
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="../css/style.css">
-  <link rel="stylesheet" href="../css/dashboard.css">
-  <title>Dashboard</title>
-</head>
+  <body>
+    <header>
+      <nav class="navbar">
+        <div class="brand">
+          <img src="../assets/logo.png" width="200" height="35" alt="Logo" />
+        </div>
+        <h1>Multi-Objective Decision Making Application</h1>
+        <div class="user-info">
+          <span id="user-email">User Email</span>
+          <button id="user-logout" class="btn btn-secondary">Logout</button>
+        </div>
+      </nav>
+    </header>
 
-<body>
-  <header>
-    <nav class="navbar">
-      <div class="brand">
-        <img src="../assets/logo.png" width="200" height="35" alt="Logo">
+    <!-- <button class="modal-btn js-modal-btn">Open Modal</button> -->
 
-      </div>
-      <h1>Multi-Objective Decision Making Application</h1>
-      <div class="user-info">
-        <span id="user-email">User Email</span>
-        <button id="user-logout" class="btn btn-secondary">Logout</button>
-      </div>
-    </nav>
-  </header>
+    <!-- <div class="modal js-modal" id="myModal">
+        <div class="modal-content js-modal-content">
+            <span class="close js-close">&times;</span>
+            <h1>test</h1>
+            <button class="js-submit-btn">Submit</button>
+        </div>
+    </div> -->
 
-  <div class="content">
-    <div class="content-box">
-      <h1>Welcome to the MODM</h1><br><br>
-      <button class="trigger">Get Started</button><br><br>
-      <p>The main objective of this tool is to empower users to make informed decisions
-        regarding climate-related scenarios. It aims to contribute to climate awareness
-        and action by offering a practical decision-making resource.</p>
-      <div class="modal">
-        <div class="modal-content">
-          <span class="close-button">×</span>
-          <h1>Dynamic table goes in here!</h1>
+    <div class="content">
+      <div class="content-box">
+        <p>
+          The main objective of this tool is to empower users to make informed
+          decisions regarding climate-related scenarios. <br />It aims to
+          contribute to climate awareness and action by offering a practical
+          decision-making resource.
+        </p>
+        <div class="modal">
+          <div class="modal-content">
+            <span class="close-button">×</span>
+            <h1>Dynamic table goes in here!</h1>
+          </div>
         </div>
       </div>
-
+      <div class="file-upload">
+        <input type="file" id="csvFile" accept=".csv" />
+        <button class="btn btn-primary" id="convertButton">Upload</button>
+      </div>
+      <button class="modal-btn js-modal-btn">Add Category</button>
     </div>
-    <div class="file-upload">
-      <input type="file" id="csvFile" accept=".csv" />
-      <button id="convertButton">Convert to JSON</button> 
-    </div>
-  </div>
-  <!-- <script src="../js/constants.js" type="module"></script> -->
-  <script src="../js/dashboard.js" type="module"></script>
-  <script src="../js/fileupload.js"></script>
-</body>
 
+    <div class="modal js-modal" id="myModal">
+      <div class="modal-content js-modal-content">
+        <span class="close js-close">&times;</span>
+        <form class="js-category-creation-form">
+        
+          <div class="form-element">
+            <label for="categoryName" class="js-label">Category Name:</label>
+            <input type="text" id="categoryName" class="js-input" required />
+          </div>
+
+          <div class="form-element">
+            <label for="categoryWeight" class="js-label">Category Weight:</label>
+            <input
+              type="number"
+              id="categoryWeight"
+              class="js-input"
+              step="0.1"
+              required
+            />
+          </div>
+          <div class="form-element">
+            <label for="categoryDirection" class="js-label">Category Direction:</label>
+            <select id="categoryDirection" class="js-select" required>
+              <option value="positive">Positive</option>
+              <option value="negative">Negative</option>
+            </select>
+          </div>
+          <div class="form-element">
+            <label for="evaluationType" class="js-label">Category Evaluation Type:</label>
+            <select id="evaluationType" class="js-select" required>
+              <option value="ordinal">Ordinal</option>
+              <option value="linear">Linear</option>
+              <option value="descriptive">Descriptive</option>
+            </select>
+          <div class="form-element">
+          <button type="submit" class="js-submit-btn">Submit</button>
+        </form>
+      </div>
+    </div>
+
+    <script src="../js/dashboard.js" type="module"></script>
+    <script src="../js/fileupload.js"></script>
+  </body>
 </html>

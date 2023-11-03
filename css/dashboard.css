@@ -1,7 +1,8 @@
 header {
-    background-color: #ffffff;
+    background-color: #e2e2e2;
     color: white;
-    padding: 10px 0;
+    /* padding: 10px 0; */
+    border-bottom: 1px solid black;
   }
 
   .navbar {
@@ -16,6 +17,7 @@ header {
   .navbar .brand {
     float: left;
     padding-top: 10px;
+    height: 100%;
   }
 
   
@@ -28,7 +30,8 @@ header {
   .user-info {
     display: flex;
     align-items: center;
-    gap: 10px
+    gap: 10px;
+    color: black;
   }
 
   .content {
@@ -36,17 +39,22 @@ header {
   }
 
   .content-box {
-    background: linear-gradient(to right, #686868, #ffffff);
-    border: 1px solid #ccc;
+    /* background: linear-gradient(to right, #686868, #ffffff); */
+    /* border: 1px solid #ccc; */
     border-radius: 5px;
-    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
-    width: 95vw; 
-    height: 60vh;
+    /* box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1); */
+    width: 100%; 
+    /* height: 80vh; */
     text-align: center;
     padding-top: 20px;
+    /* font-family: cursive; */
     font-size: 25px;
 }
 
+.content-box p {
+  font-size: 20px;
+}
+/* 
   .trigger{
     text-align: center;
     padding: 7px 13px;
@@ -100,7 +108,7 @@ header {
   visibility: visible;
   transform: scale(1.0);
   transition: visibility 0s linear 0s, opacity 0.25s 0s, transform 0.25s;
-}
+} */
 
 
 
@@ -116,9 +124,12 @@ header {
 }
 
 .file-upload input {
-  flex: 1;
+  margin: 0;
+  flex: 3;
+  height: 100%;
 }
 
 .file-upload button {
   flex: 1;
+  height: 100%;
 }
