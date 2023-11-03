@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dynamic Tables</title>
+    <link rel="stylesheet" href="tables.css">
+</head>
+<body>
+  <!-- First Table -->
+  <div class="table-container">
+    <table id="myTable1" class="table-bordered">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Weight</th>
+          <th>Direction</th>
+          <th>Evaluation Type</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
+    <button onclick="openModal('categoryModal')">Add category</button>
+  </div>
+
+  <!-- Second Table -->
+  <div class="table-container">
+    <table id="myTable2" class="table-bordered">
+      <thead>
+        <tr>
+          <th>Name</th>
+        </tr>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
+    <button id="addScenarioButton" onclick="openModal('scenarioModal')" disabled>Add scenario</button>
+  </div>
+
+  <!-- Category Modal -->
+  <div id="categoryModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('categoryModal')">&times;</span>
+      <h2>Add Category</h2>
+      <form id="categoryForm">
+        <label for="categoryName">Name:</label>
+        <input type="text" name="categoryName" required><br>
+        
+        <label for="categoryWeight">Weight:</label>
+        <input type="number" step="0.01" name="categoryWeight" required><br>
+        
+        <label>Direction:</label>
+        <label class="radio-label"><input type="radio" name="categoryDirection" value="positive" required> Positive</label>
+        <label class="radio-label"><input type="radio" name="categoryDirection" value="negative" required> Negative</label><br>
+        
+        <label>Evaluation Type:</label>
+        <select name="categoryEvaluationType" required>
+          <option value="ordinal">Ordinal</option>
+          <option value="linear">Linear</option>
+          <option value="descriptive">Descriptive</option>
+        </select><br>
+        
+        <button type="button" onclick="submitCategory()">Submit</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Scenario Modal -->
+  <div id="scenarioModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('scenarioModal')">&times;</span>
+      <h2>Add Scenario</h2>
+      <form id="scenarioForm">
+        <label for="scenarioName">Name:</label>
+        <input type="text" name="scenarioName" required><br>
+
+        <!-- Categories will be dynamically added here -->
+        <div id="categoryValues"></div> <!-- Container for category values -->
+        
+        <button type="button" onclick="submitScenario()">Submit</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="tables.js"></script>
+</body>
+</html>
