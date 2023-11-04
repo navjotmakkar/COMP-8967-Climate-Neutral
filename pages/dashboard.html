@@ -26,16 +26,6 @@
       </nav>
     </header>
 
-    <!-- <button class="modal-btn js-modal-btn">Open Modal</button> -->
-
-    <!-- <div class="modal js-modal" id="myModal">
-        <div class="modal-content js-modal-content">
-            <span class="close js-close">&times;</span>
-            <h1>test</h1>
-            <button class="js-submit-btn">Submit</button>
-        </div>
-    </div> -->
-
     <div class="content">
       <div class="content-box">
         <p>
@@ -66,6 +56,7 @@
       </div>
 
       <div class="scenarios-table-wrapper js-scenarios-table">
+        <h2>Scenario Table</h2>
         <table class="scenarios-table">
           <thead></thead>
           <tbody class="js-table-body">
@@ -77,9 +68,10 @@
         </button>
       </div>
 
-      <button class="btn btn-secondary js-modma-btn">Perform M-O-D-M</button>
+      <!-- <button class="btn btn-secondary js-modma-btn">Perform M-O-D-M</button> -->
 
       <div class="ranking-table-wrapper js-ranking-table">
+        <h2>Ranking Table (Best to Worst case scenario)</h2>
         <table class="scenarios-table">
           <thead></thead>
           <tbody class="js-table-body">
@@ -90,16 +82,24 @@
 
       <div class="results-insights js-results-insights hidden">
         <h2>Results Insights</h2>
+
+        <div class="weight-distribution js-wight-distribution">
+          <label class="category-weight-label">Category Weight distribution</label>
+
+        </div>
+        <div class="performance-score js-performance-score">
+          <label class="performance-score-label">Scenario Performance Score</label>
+        </div>
+
         <div class="best-case-scenario js-best-case-scenario">
+          <label class="best-case-scenario-label">Best Case Scenario</label>
           <pre></pre>
         </div>
 
         <div class="worst-case-scenario js-worst-case-scenario">
+          <label class="worst-case-scenario-label">Worst Case Scenario</label>
           <pre></pre>
         </div>
-
-        <div class="weight-distribution js-wight-distribution"></div>
-        <div class="performance-score js-performance-score"></div>
 
       </div>
 
@@ -113,7 +113,7 @@
             <label for="scenarioName" class="js-label">Scenario Name</label>
             <input type="text" id="scenarioName" class="js-input" required />
           </div>
-          <div class="js-add-scenario-form-container"></div>
+          <div class="add-scenario-form-container js-add-scenario-form-container"></div>
 
           <button
             type="submit"

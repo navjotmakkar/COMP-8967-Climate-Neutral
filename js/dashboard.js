@@ -84,7 +84,7 @@ function updateAllCategories() {
     // Construct HTML for category tabs using map and join
     const categoryTabsHTML = categories
       .map((category) => {
-        return `<label class="category-tab">${category.categoryName}</label>`;
+        return `<label class="category-tab">${category.categoryName} - ${(category.categoryWeight * 100)}%</label>`;
       })
       .join("");
 
@@ -200,7 +200,7 @@ function populateTable() {
 
   // Create the header row with scenario names as columns
   const headerRow = document.createElement("tr");
-  headerRow.innerHTML = "<th>Category</th>";
+  headerRow.innerHTML = "<th>Scenarios</th>";
   categories.forEach((category) => {
     headerRow.innerHTML += `<th>${category.categoryName}</th>`;
   });
@@ -219,6 +219,7 @@ function populateTable() {
 
     tableBody.appendChild(row);
   });
+  calculateMODMA();
 }
 
 function plotGraph(categories, results) {
@@ -366,11 +367,12 @@ function calculateMODMA() {
   });
 
   localStorage.setItem("rankingTable", JSON.stringify(normalizedScenarios));
-}
-modmaBtn.addEventListener("click", () => {
-  calculateMODMA();
   populateResults();
-});
+}
+// modmaBtn.addEventListener("click", () => {
+//   calculateMODMA();
+//   populateResults();
+// });
 
 updateAllCategories();
 populateTable();

@@ -86,7 +86,7 @@ header {
 }
 
 .all-categories .category-tab {
-  padding: 5px;
+  padding: 5px 10px;
   border: 1px solid #28a745;
   border-radius: 5px;
   background-color: lightgreen;
@@ -95,6 +95,7 @@ header {
 }
 .modal-content .form-element {
   display: flex;
+  align-items: center;
 }
 .form-element label{
   width: 30%;
@@ -111,8 +112,14 @@ header {
   gap: 10px;
 }
 
+.scenarios-table-wrapper {
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid black;
+}
 .scenarios-table {
   width: 100%;
+  margin-top: 10px;
 }
 
 table, td, th {
@@ -151,13 +158,14 @@ th, td {
 .worst-case-scenario {
   border: 1px solid black;
   border-radius: 5px;
-  padding: 30px;
+  padding: 10px;
   font-size: 16px;
   font-weight: 800;
 }
 
 .performance-score,
 .weight-distribution {
+  position: relative;
   border: 1px solid black;
   border-radius: 5px;
   padding: 10px;
@@ -169,4 +177,27 @@ th, td {
 
 .worst-case-scenario {
   background-color: #e2b6b6;
+}
+
+.add-scenario-form-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+}
+
+.best-case-scenario-label,
+.worst-case-scenario-label {
+  display: block;
+  font-size: 20px;
+  margin-bottom: 8px;
+}
+
+.category-weight-label,
+.performance-score-label {
+  font-size: 20px;
+  font-weight: 800;
+  position: absolute;
+  top: 10px;
+  left: 10px;
 }
