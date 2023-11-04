@@ -3,6 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script
+      src="https://cdn.plot.ly/plotly-2.27.0.min.js"
+      charset="utf-8"
+    ></script>
     <link rel="stylesheet" href="../css/style.css" />
     <link rel="stylesheet" href="../css/dashboard.css" />
     <title>Dashboard</title>
@@ -73,9 +77,7 @@
         </button>
       </div>
 
-      <button class="btn btn-secondary js-modma-btn">
-        Perform M-O-D-M
-      </button>
+      <button class="btn btn-secondary js-modma-btn">Perform M-O-D-M</button>
 
       <div class="ranking-table-wrapper js-ranking-table">
         <table class="scenarios-table">
@@ -85,6 +87,22 @@
           </tbody>
         </table>
       </div>
+
+      <div class="results-insights js-results-insights hidden">
+        <h2>Results Insights</h2>
+        <div class="best-case-scenario js-best-case-scenario">
+          <pre></pre>
+        </div>
+
+        <div class="worst-case-scenario js-worst-case-scenario">
+          <pre></pre>
+        </div>
+
+        <div class="weight-distribution js-wight-distribution"></div>
+        <div class="performance-score js-performance-score"></div>
+
+      </div>
+
     </div>
 
     <div class="modal js-add-scenario-modal">
@@ -97,7 +115,10 @@
           </div>
           <div class="js-add-scenario-form-container"></div>
 
-          <button type="submit" class="btn btn-primary js-add-scenario-submit-btn">
+          <button
+            type="submit"
+            class="btn btn-primary js-add-scenario-submit-btn"
+          >
             Submit
           </button>
         </form>
