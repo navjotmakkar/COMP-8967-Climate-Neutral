@@ -19,6 +19,11 @@ const jsAddScenarioSubmitBtn = document.querySelector(
   ".js-add-scenario-submit-btn"
 );
 const modmaBtn = document.querySelector(".js-modma-btn");
+const resultsInsights = document.querySelector(".js-results-insights");
+const bestCaseScenario = document.querySelector(".js-best-case-scenario > pre");
+const worstCaseScenario = document.querySelector(
+  ".js-worst-case-scenario > pre"
+);
 
 const scale = {
   low: 1,
@@ -216,6 +221,35 @@ function populateTable() {
   });
 }
 
+function plotGraph(categories, results) {
+  const piChart = document.querySelector(".js-wight-distribution");
+  const barChart = document.querySelector(".js-performance-score");
+
+  const piData = [
+    {
+      values: categories.map((c) => c.categoryWeight),
+      labels: categories.map((c) => c.categoryName),
+      type: "pie",
+    },
+  ];
+
+  const piLayout = {
+    height: 500,
+    width: 500,
+  };
+
+  const barData = [
+    {
+      x: results.map((r) => r.scenarioName),
+      y: results.map((r) => r.performanceScore),
+      type: "bar",
+    },
+  ];
+
+  window.Plotly.newPlot(barChart, barData, piLayout);
+  window.Plotly.newPlot(piChart, piData, piLayout);
+}
+
 function populateResults() {
   const rankingTable = document.querySelector(".js-ranking-table");
   const tableBody = rankingTable.querySelector(".js-table-body");
@@ -234,10 +268,9 @@ function populateResults() {
   });
 
   // Sort in descending order
-  results.sort((a,b) => b.performanceScore - a.performanceScore)
-
+  results.sort((a, b) => b.performanceScore - a.performanceScore);
   localStorage.setItem("rankingTable", JSON.stringify(results));
-  
+
   // Create the header row with scenario names as columns
   const headerRow = document.createElement("tr");
   headerRow.innerHTML = "<th>Category</th>";
@@ -259,7 +292,19 @@ function populateResults() {
 
     tableBody.appendChild(row);
   });
+  if (results.length >= 2) {
+    resultsInsights.classList.remove("hidden");
+    bestCaseScenario.textContent = JSON.stringify(results[0], undefined, 2);
+    worstCaseScenario.textContent = JSON.stringify(
+      results[results.length - 1],
+      undefined,
+      2
+    );
+  }
+
+  plotGraph(categories, results);
 }
+
 addScenarioForm.addEventListener("submit", (e) => {
   e.preventDefault();
   const scenarios = JSON.parse(localStorage.getItem("scenarios")) || [];
