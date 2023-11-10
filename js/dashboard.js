@@ -34,6 +34,12 @@ const fileInput = document.getElementById("csvFile");
 // Call uploadCSV function when the "Upload" button is clicked
 const uploadButton = document.getElementById("convertButton");
 
+// call clearData functiomn to clear scenarios, categories, ranking table and charts
+const clearDataButton = document.querySelector(".js-clear-data-btn");
+
+//call MODM function which will calculate table, scores, and plot charts
+const analyzeDataBtn = document.querySelector(".js-analyze-data-btn");
+
 // Call uploadCSV function when the file input value changes
 uploadButton.addEventListener("click", function () {
   fileInput.value = "";
@@ -451,6 +457,18 @@ function plotGraph(categories, results) {
   window.Plotly.newPlot(piChart, piData, piLayout);
 }
 
+analyzeDataBtn.addEventListener("click", () => {
+  const scenarios = JSON.parse(localStorage.getItem("scenarios")) || [];
+  if (scenarios.length >= 2) {
+    calculateMODMA();
+  } else {
+    const noResultsAvailable = document.querySelector(".js-no-results");
+    const rankingTable = document.querySelector(".js-ranking-table");
+    noResultsAvailable.classList.remove("hidden");
+    rankingTable.classList.add("hidden");
+  }
+});
+
 function populateResults() {
   const rankingTable = document.querySelector(".js-ranking-table");
   const tableBody = rankingTable.querySelector(".js-table-body");
@@ -692,6 +710,31 @@ function downloadCSV() {
   // Clean up
   document.body.removeChild(link);
   URL.revokeObjectURL(url);
+}
+
+clearDataButton.addEventListener("click", () => {
+  clearAllData();
+});
+
+function clearAllData() {
+  // Clear categories
+  localStorage.removeItem("categories");
+
+  // Clear scenarios
+  localStorage.removeItem("scenarios");
+
+  // Clear ranking table
+  localStorage.removeItem("rankingTable");
+
+  // Clear both charts (replace these lines with your actual chart clearing logic)
+  const piChart = document.querySelector(".js-wight-distribution");
+  const barChart = document.querySelector(".js-performance-score");
+  piChart.innerHTML = "";
+  barChart.innerHTML = "";
+
+  // Update UI
+  updateAllScenarios();
+  populateTable();
 }
 
 const downloadButton = document.getElementById("downloadCSV"); // Replace "downloadButton" with the actual ID of your button

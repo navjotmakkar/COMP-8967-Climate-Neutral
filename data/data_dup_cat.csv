@@ -1,0 +1,13 @@
+Category,categoryName,categoryWeight,categoryDirection,evaluationType,
+Category,Price,0.25,positive,numerical,
+Category,Storage,0.25,positive,numerical,
+Category,Camera,0.25,positive,numerical,
+Category,Looks,0.25,positive,descriptive,
+Category,Price,0.25,positive,numerical,
+,,,,,
+Scenarios,scenarioName,Price,Storage,Camera,Looks
+Scenarios,Mobile 1,250,16,12,3
+Scenarios,Mobile 2,200,16,8,2
+Scenarios,Mobile 3,200,32,16,1
+Scenarios,Mobile 4,275,32,8,2
+Scenarios,Mobile 5,225,16,16,1

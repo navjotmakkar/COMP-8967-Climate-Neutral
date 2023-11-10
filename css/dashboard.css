@@ -271,3 +271,31 @@ th, td {
 .scenarios-header-wrapper button{ 
   padding: 10px 30px;
 }
+
+.js-clear-data-btn {
+  display: inline-block;
+  padding: 10px 20px;
+  margin-top: 10px; /* Add margin to the top */
+  margin-bottom: 10px; /* Add margin to the bottom */
+  font-size: 16px;
+  background-color: #dc3545;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.js-analyze-data-btn {
+  display: inline-block;
+  padding: 10px 20px;
+  margin-top: 10px; /* Add margin to the top */
+  margin-bottom: 10px; /* Add margin to the bottom */
+  font-size: 16px;
+  background-color: #1fd00b;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
