@@ -1,4 +1,4 @@
-const categories = [
+export const categories = [
     {
         "categoryName": "Price",
         "categoryWeight": 0.25,
@@ -26,7 +26,7 @@ const categories = [
 ]
 
 
-const scenarios = [
+export const scenarios = [
     {
         "scenarioName": "Mobile 1",
         "Price": "250",

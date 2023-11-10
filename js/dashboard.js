@@ -1,11 +1,11 @@
 import { firebaseConfig } from "./constants.js";
-
+import { categories, scenarios } from "./data.js";
 // Initialize Firebase
 const firebaseApp = firebase.initializeApp(firebaseConfig);
 const userEmail = document.getElementById("user-email");
 const logoutBtn = document.getElementById("user-logout");
 const modalBtn = document.querySelector(".js-modal-btn");
-const modal = document.querySelector(".js-modal");
+const modal = document.querySelector(".js-modal-add-category");
 const closeBtn = document.querySelector(".js-close");
 const categoryForm = document.querySelector(".js-category-creation-form");
 const addScenario = document.querySelector(".js-modal-add-scenario-btn");
@@ -24,14 +24,87 @@ const bestCaseScenario = document.querySelector(".js-best-case-scenario > pre");
 const worstCaseScenario = document.querySelector(
   ".js-worst-case-scenario > pre"
 );
+const categoryUpdateBtn = document.querySelector(".js-update-btn");
+const categorySubmitBtn = document.querySelector(".js-submit-btn");
+const hardReset = document.querySelector(".js-hard-reset");
 
-const scale = {
-  low: 1,
-  belowAverage: 2,
-  average: 3,
-  good: 4,
-  excellent: 5,
-};
+let allCategories, allScenarios;
+
+const scale = [
+  { value: 1, label: "Low" },
+  { value: 2, label: "Below Average" },
+  { value: 3, label: "Average" },
+  { value: 4, label: "Good" },
+  { value: 5, label: "Excellent" },
+];
+
+function populateCategoryForm(index) {
+  const formElements = categoryForm.querySelectorAll(".form-element");
+
+  formElements.forEach((element) => {
+    const category = allCategories[index];
+    const input = element.querySelector("input, select");
+    input.value = category[input.attributes.name.value];
+  });
+}
+
+function deleteCategory(index) {
+  allCategories.splice(index, 1);
+  localStorage.setItem("categories", JSON.stringify(allCategories));
+  updateAllScenarios();
+}
+
+function deleteScenario(index) {
+  allScenarios = JSON.parse(localStorage.getItem("scenarios")) || [];
+  allScenarios.splice(index, 1);
+  localStorage.setItem("scenarios", JSON.stringify(allScenarios));
+  updateAllScenarios();
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  allCategories = [...JSON.parse(localStorage.getItem("categories"))] || [];
+  allScenarios = JSON.parse(localStorage.getItem("scenarios")) || [];
+  const editCategoryWrapper = document.querySelector(".js-all-categories");
+  const editScenario = document.querySelector(".js-table-body");
+
+  editCategoryWrapper.addEventListener("click", (e) => {
+    if (e.target.classList.contains("js-edit-icon")) {
+      modal.style.display = "block";
+      categoryForm
+        .querySelector("#categoryName")
+        .setAttribute("disabled", true);
+      categoryForm
+        .querySelector("#evaluationType")
+        .setAttribute("disabled", true);
+      categorySubmitBtn.classList.add("hidden");
+      categoryUpdateBtn.classList.remove("hidden");
+      populateCategoryForm(e.target.attributes["data-category-index"].value);
+    } else if (e.target.classList.contains("js-trash-icon")) {
+      deleteCategory(
+        parseInt(e.target.attributes["data-category-index"].value)
+      );
+    }
+  });
+
+  editScenario.addEventListener("click", (e) => {
+    if (e.target.classList.contains("js-edit-scenario-icon")) {
+      const index = parseInt(e.target.attributes["data-index"].value);
+      openAddScenarioModel(allScenarios[index], index);
+    }
+
+    if (e.target.classList.contains("js-trash-scenario-icon")) {
+      const index = parseInt(e.target.attributes["data-index"].value);
+      deleteScenario(index);
+    }
+  });
+});
+
+hardReset.addEventListener("click", () => {
+  localStorage.setItem("categories", JSON.stringify(categories));
+  localStorage.setItem("scenarios", JSON.stringify(scenarios));
+  updateAllScenarios();
+  populateTable();
+});
 
 // normalization
 
@@ -73,7 +146,7 @@ const handleLogout = () => {
 
 logoutBtn.addEventListener("click", handleLogout);
 
-function updateAllCategories() {
+function updateAllScenarios() {
   let categories = JSON.parse(localStorage.getItem("categories")) || []; // Parse categories from localStorage
 
   const allCategoriesContainer = document.querySelector(".js-all-categories");
@@ -83,13 +156,23 @@ function updateAllCategories() {
     noCategories && noCategories.classList.add("hidden");
     // Construct HTML for category tabs using map and join
     const categoryTabsHTML = categories
-      .map((category) => {
-        return `<label class="category-tab">${category.categoryName} - ${(category.categoryWeight * 100)}%</label>`;
+      .map((category, i) => {
+        return `<div class="category-tab" data-category-index=${i}>
+        <label>${category.categoryName} - ${
+          category.categoryWeight * 100
+        }%</label>
+        <i class="fa-solid fa-pen-to-square fa-sm js-edit-icon" data-category-index=${i}></i>
+        <i class="fa-solid fa-trash fa-sm js-trash-icon" data-category-index=${i}></i>
+      </div>`;
       })
       .join("");
 
     // Set the innerHTML of the container with the generated HTML
     allCategoriesContainer.innerHTML = categoryTabsHTML;
+    if (categories.length > 2) {
+      // calculate result
+      populateTable();
+    }
   } else {
     if (noCategories && noCategories.classList.contains("hidden")) {
       noCategories.classList.remove("hidden");
@@ -97,105 +180,172 @@ function updateAllCategories() {
   }
 }
 
-modalBtn.addEventListener("click", () => {
+function openCategoryModel() {
   modal.style.display = "block";
+  categoryForm.querySelector("#categoryName").removeAttribute("disabled");
+  categoryForm.querySelector("#evaluationType").removeAttribute("disabled");
+  categoryForm.reset();
+  categorySubmitBtn.classList.remove("hidden");
+  categoryUpdateBtn.classList.add("hidden");
+}
+
+modalBtn.addEventListener("click", () => {
+  openCategoryModel();
 });
 
-addScenario.addEventListener("click", () => {
+function createInputField(type, id, value = "") {
+  const inputField = `<input type="${type}" class="js-input" id="${id}" value="${value}" required="true" />`;
+  return inputField;
+}
+
+function createSelectField(id, options, value = "") {
+  let selectField = `<select class="js-input" id="${id}" value="${value}" required="true">`;
+  options.forEach((option) => {
+    selectField += `<option value="${option.value}">${option.label}</option>`;
+  });
+  selectField += "</select>";
+  return selectField;
+}
+
+function openAddScenarioModel(scenario, index) {
   jsAddScenarioFormContainer.innerHTML = "";
   addScenarioModel.style.display = "block";
-
+  let value;
+  let inputField;
   const categories = JSON.parse(localStorage.getItem("categories")) || [];
+  const scenarios = JSON.parse(localStorage.getItem("scenarios")) || [];
+
   categories.forEach((category) => {
-    const categoryElement = document.createElement("div");
-    categoryElement.className = "form-element";
-
-    const label = document.createElement("label");
-    label.className = "js-label";
-    label.textContent = `${category.categoryName}`;
-    categoryElement.appendChild(label);
-
-    const inputField = document.createElement("input");
-    if (category.evaluationType == "numerical") {
-      inputField.type = "number";
-      inputField.className = "js-input";
-      inputField.id = `js-${category.categoryName.replace(/\s/g, "")}`; // Remove spaces from category name for ID
-      inputField.required = true;
-      categoryElement.appendChild(inputField);
+    const id = `js-${category.categoryName.replace(/\s/g, "")}`;
+    if (scenario) {
+      const updatedScenario = scenarios[index];
+      if (category.evaluationType === "numerical") {
+        value = updatedScenario[category.categoryName] || "";
+        inputField = createInputField("number", id, value);
+      } else {
+        value = updatedScenario[category.categoryName] || 1;
+        inputField = createSelectField(id, scale, value);
+      }
     } else {
-      const selectField = document.createElement("select");
-      // selectField.type = "select";
-      selectField.className = "js-input";
-      selectField.id = `js-${category.categoryName.replace(/\s/g, "")}`; // Remove spaces from category name for ID
-      selectField.required = true;
-      // Options for descriptive input
-      const highOption = document.createElement("option");
-      highOption.value = "3";
-      highOption.textContent = "High";
-      selectField.appendChild(highOption);
-
-      const mediumOption = document.createElement("option");
-      mediumOption.value = "2";
-      mediumOption.textContent = "Medium";
-      selectField.appendChild(mediumOption);
-
-      const lowOption = document.createElement("option");
-      lowOption.value = "1";
-      lowOption.textContent = "Low";
-      selectField.appendChild(lowOption);
-      categoryElement.appendChild(selectField);
+      if (category.evaluationType === "numerical") {
+        inputField = createInputField("number", id, "");
+      } else {
+        inputField = createSelectField(id, scale, 1);
+      }
     }
 
-    jsAddScenarioFormContainer.appendChild(categoryElement);
+    const categoryElement = `<div class="form-element">
+                                <label class="js-label">${category.categoryName}</label>
+                                ${inputField}
+                             </div>`;
+
+    jsAddScenarioFormContainer.insertAdjacentHTML("beforeend", categoryElement);
   });
+  if (scenario) {
+    const categoryNameInput = document.querySelector(
+      "form.js-add-scenario-form #scenarioName"
+    );
+    const updateScenarioBtn = document.querySelector(".js-update-scenario-btn");
+    updateScenarioBtn.classList.remove("hidden");
+    updateScenarioBtn.setAttribute("data-index", index);
+    jsAddScenarioSubmitBtn.classList.add("hidden");
+    categoryNameInput.value = scenario.scenarioName;
+  }
+}
+
+addScenario.addEventListener("click", () => {
+  openAddScenarioModel();
 });
 
 closeBtn.addEventListener("click", () => {
   modal.style.display = "none";
+  categoryForm.reset();
+  handleClearForm(categoryForm);
 });
 addScenarioModelClose.addEventListener("click", () => {
-  addScenarioModel.style.display = "none";
+  handleAddCategoryModelClose();
+  handleClearForm(addScenarioForm);
 });
 
 window.addEventListener("click", (event) => {
   if (event.target === modal) {
     modal.style.display = "none";
+    handleClearForm(categoryForm);
   }
   if (event.target === addScenarioModel) {
-    addScenarioModel.style.display = "none";
+    handleAddCategoryModelClose();
+    handleClearForm(addScenarioForm);
   }
 });
 
+function handleClearForm(form) {
+  form.reset();
+}
+
+function updateScenarioForNewCategory(newCategory) {
+  const { categoryName, categoryWeight } = newCategory;
+
+  let allScenarios = JSON.parse(localStorage.getItem("scenarios")) || [];
+
+  allScenarios = allScenarios.map((s) => {
+    if (!s[categoryName]) {
+      const temp = { ...s };
+      temp[categoryName] = "-";
+      return temp;
+    }
+    return s;
+  });
+  localStorage.setItem("scenarios", JSON.stringify(allScenarios));
+}
+
 categoryForm.addEventListener("submit", (e) => {
   e.preventDefault();
-  const categoryName = document.getElementById("categoryName").value;
-  const categoryWeight = parseFloat(
-    document.getElementById("categoryWeight").value
-  );
-  const categoryDirection = document.getElementById("categoryDirection").value;
-  const evaluationType = document.getElementById("evaluationType").value;
   let categories = JSON.parse(localStorage.getItem("categories")) || [];
-  categories = [
-    ...categories,
-    {
-      categoryName: categoryName,
-      categoryWeight: categoryWeight,
-      categoryDirection: categoryDirection,
-      evaluationType: evaluationType,
-    },
-  ];
-  localStorage.setItem("categories", JSON.stringify(categories));
-  // Close the modal after processing the input
+  const categoryName = document.getElementById("categoryName");
+  const categoryWeight = document.getElementById("categoryWeight");
+  const categoryDirection = document.getElementById("categoryDirection");
+  const evaluationType = document.getElementById("evaluationType");
+  const temp = {
+    categoryName: categoryName.value,
+    categoryWeight: parseFloat(categoryWeight.value),
+    categoryDirection: categoryDirection.value,
+    evaluationType: evaluationType.value,
+  };
+  if (e.submitter.classList.contains("js-update-btn")) {
+    let indexToBeUpdated = undefined;
+    const categoryToBeUpdated = categories.find((c, i) => {
+      if (c.categoryName == categoryName.value) {
+        indexToBeUpdated = i;
+        return true;
+      }
+    });
+    categories[indexToBeUpdated] = temp;
+    localStorage.setItem("categories", JSON.stringify(categories));
+  } else {
+    categories = [
+      ...categories,
+      {
+        categoryName: categoryName.value,
+        categoryWeight: categoryWeight.value,
+        categoryDirection: categoryDirection.value,
+        evaluationType: evaluationType.value,
+      },
+    ];
+    localStorage.setItem("categories", JSON.stringify(categories));
+    updateScenarioForNewCategory(temp);
+    // Close the modal after processing the input
+  }
+  handleClearForm(categoryForm);
   modal.style.display = "none";
 
-  updateAllCategories();
+  updateAllScenarios();
 });
 
 function populateTable() {
   const tableBody = document.querySelector(".js-table-body");
   tableBody.innerHTML = "";
   // Retrieve categories and scenarios from localStorage
-  const categories = [...JSON.parse(localStorage.getItem("categories"))] || [];
+  const categories = JSON.parse(localStorage.getItem("categories")) || [];
   const scenarios = JSON.parse(localStorage.getItem("scenarios")) || [];
 
   // Create the header row with scenario names as columns
@@ -207,14 +357,18 @@ function populateTable() {
   tableBody.appendChild(headerRow);
 
   // Iterate through categories and populate the table dynamically
-  scenarios.forEach((scenario) => {
+  scenarios.forEach((scenario, i) => {
     const row = document.createElement("tr");
-    row.innerHTML = `<td>${scenario.scenarioName}</td>`;
+    row.innerHTML = `<td class="scenario-name-table-cell"> 
+      <span>${scenario.scenarioName} </span>    
+        <i class="fa-solid fa-pen-to-square fa-sm js-edit-scenario-icon" data-index=${i}></i>
+        <i class="fa-solid fa-trash fa-sm js-trash-scenario-icon" data-index=${i}></i>
+    </td>`;
 
     // Populate category data for each scenario
 
     categories.forEach((category) => {
-      row.innerHTML += `<td>${scenario[category.categoryName]}</td>`;
+      row.innerHTML += `<td>${scenario[category.categoryName] || "-"}</td>`;
     });
 
     tableBody.appendChild(row);
@@ -310,6 +464,7 @@ addScenarioForm.addEventListener("submit", (e) => {
   e.preventDefault();
   const scenarios = JSON.parse(localStorage.getItem("scenarios")) || [];
   const temp = {};
+
   const scenarioName = addScenarioForm.querySelector("#scenarioName");
   const formElement =
     jsAddScenarioFormContainer.querySelectorAll(".form-element");
@@ -319,10 +474,34 @@ addScenarioForm.addEventListener("submit", (e) => {
     const input = element.querySelector("input, select");
     temp[label.textContent] = input.value;
   });
-
-  localStorage.setItem("scenarios", JSON.stringify([...scenarios, temp]));
+  if (e.submitter.classList.contains("js-update-scenario-btn")) {
+    const index = e.submitter.attributes["data-index"].value;
+    scenarios[index] = { ...scenarios[index], ...temp };
+    console.log(scenarios);
+    localStorage.setItem("scenarios", JSON.stringify(scenarios));
+    const categoryNameInput = document.querySelector(
+      "form.js-add-scenario-form #scenarioName"
+    );
+    const updateScenarioBtn = document.querySelector(".js-update-scenario-btn");
+    updateScenarioBtn.classList.add("hidden");
+    jsAddScenarioSubmitBtn.classList.remove("hidden");
+  } else {
+    localStorage.setItem("scenarios", JSON.stringify([...scenarios, temp]));
+  }
+  handleAddCategoryModelClose();
+  handleClearForm(addScenarioForm);
   populateTable();
 });
+
+function handleAddCategoryModelClose() {
+  const categoryNameInput = document.querySelector(
+    "form.js-add-scenario-form #scenarioName"
+  );
+  const updateScenarioBtn = document.querySelector(".js-update-scenario-btn");
+  updateScenarioBtn.classList.add("hidden");
+  jsAddScenarioSubmitBtn.classList.remove("hidden");
+  addScenarioModel.style.display = "none";
+}
 
 function calculateMODMA() {
   const categories = JSON.parse(localStorage.getItem("categories")) || [];
@@ -334,12 +513,20 @@ function calculateMODMA() {
   categories.forEach((category) => {
     maxValues[category.categoryName] = Math.max(
       ...scenarios.map((scenario) =>
-        parseFloat(scenario[category.categoryName])
+        parseFloat(
+          scenario[category.categoryName] == "-"
+            ? 0
+            : scenario[category.categoryName]
+        )
       )
     );
     minValues[category.categoryName] = Math.min(
       ...scenarios.map((scenario) =>
-        parseFloat(scenario[category.categoryName])
+        parseFloat(
+          scenario[category.categoryName] == "-"
+            ? 0
+            : scenario[category.categoryName]
+        )
       )
     );
   });
@@ -351,12 +538,16 @@ function calculateMODMA() {
     };
     categories.forEach((category) => {
       const value = parseFloat(scenario[category.categoryName]);
-      if (category.categoryDirection === "positive") {
-        normalizedScenario[category.categoryName] =
-          value / maxValues[category.categoryName];
-      } else if (category.categoryDirection === "negative") {
-        normalizedScenario[category.categoryName] =
-          minValues[category.categoryName] / value;
+      if (isNaN(value)) {
+        normalizedScenario[category.categoryName] = 0;
+      } else {
+        if (category.categoryDirection === "positive") {
+          normalizedScenario[category.categoryName] =
+            value / maxValues[category.categoryName];
+        } else if (category.categoryDirection === "negative") {
+          normalizedScenario[category.categoryName] =
+            minValues[category.categoryName] / value;
+        }
       }
 
       // Assign weight and calculate performance score
@@ -374,5 +565,5 @@ function calculateMODMA() {
 //   populateResults();
 // });
 
-updateAllCategories();
+updateAllScenarios();
 populateTable();

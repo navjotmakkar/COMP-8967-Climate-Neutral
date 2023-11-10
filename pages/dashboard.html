@@ -7,6 +7,7 @@
       src="https://cdn.plot.ly/plotly-2.27.0.min.js"
       charset="utf-8"
     ></script>
+    <script src="https://kit.fontawesome.com/b28bb7b0be.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="../css/style.css" />
     <link rel="stylesheet" href="../css/dashboard.css" />
     <title>Dashboard</title>
@@ -26,6 +27,7 @@
       </nav>
     </header>
 
+    <button class="js-hard-reset"> Reset </button>
     <div class="content">
       <div class="content-box">
         <p>
@@ -52,7 +54,6 @@
 
       <div class="all-categories js-all-categories">
         <p class="js-no-categories">No Categories available</p>
-        <!-- <label class="category-tab">abc</label> -->
       </div>
 
       <div class="scenarios-table-wrapper js-scenarios-table">
@@ -121,17 +122,20 @@
           >
             Submit
           </button>
+          <button type="submit" class="btn btn-primary js-update-scenario-btn hidden">
+            Update
+          </button>
         </form>
       </div>
     </div>
 
-    <div class="modal js-modal" id="myModal">
+    <div class="modal js-modal-add-category" id="myModal">
       <div class="modal-content category-creation-model js-modal-content">
         <span class="close js-close">&times;</span>
         <form class="category-creation-form js-category-creation-form">
           <div class="form-element">
             <label for="categoryName" class="js-label">Category Name:</label>
-            <input type="text" id="categoryName" class="js-input" required />
+            <input type="text" id="categoryName" class="js-input" required name="categoryName" />
           </div>
 
           <div class="form-element">
@@ -141,6 +145,7 @@
             <input
               type="number"
               id="categoryWeight"
+              name="categoryWeight"
               class="js-input"
               step="any"
               min="0"
@@ -152,7 +157,7 @@
             <label for="categoryDirection" class="js-label"
               >Category Direction:</label
             >
-            <select id="categoryDirection" class="js-select" required>
+            <select id="categoryDirection" class="js-select" name="categoryDirection" required>
               <option value="positive">Positive</option>
               <option value="negative">Negative</option>
             </select>
@@ -161,7 +166,7 @@
             <label for="evaluationType" class="js-label"
               >Category Evaluation Type:</label
             >
-            <select id="evaluationType" class="js-select" required>
+            <select id="evaluationType" class="js-select" name="evaluationType" required>
               <option value="numerical">Numerical</option>
               <!-- <option value="linear">Linear</option> -->
               <option value="descriptive">Descriptive</option>
@@ -169,6 +174,9 @@
           </div>
           <button type="submit" class="btn btn-primary js-submit-btn">
             Submit
+          </button>
+          <button type="submit" class="btn btn-primary js-update-btn hidden">
+            Update
           </button>
         </form>
       </div>
