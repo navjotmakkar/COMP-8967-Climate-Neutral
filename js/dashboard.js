@@ -570,6 +570,23 @@ function calculateMODMA() {
   const categories = JSON.parse(localStorage.getItem("categories")) || [];
   const scenarios = JSON.parse(localStorage.getItem("scenarios")) || [];
 
+  // Validation checks
+  const categoryValidationResult = validateCategories(categories);
+  const scenarioValidationResult = validateScenarios(scenarios);
+  const weightValidationResult = validateWeights(categories);
+
+  if (!categoryValidationResult.isValid || !scenarioValidationResult.isValid || !weightValidationResult.isValid) {
+    // Display error messages for failed validation checks
+    if (!categoryValidationResult.isValid) {
+      alert(categoryValidationResult.message);
+    } else if (!scenarioValidationResult.isValid) {
+      alert(scenarioValidationResult.message);
+    } else {
+      alert(weightValidationResult.message);
+    }
+    return;
+  }
+
   // Find maximum and minimum values for normalization
   const maxValues = {};
   const minValues = {};
@@ -745,6 +762,42 @@ function clearAllData() {
   // Update UI
   updateAllScenarios();
   populateTable();
+}
+
+function validateCategories(categories) {
+  // Check if there are duplicate category names
+  const uniqueCategoryNames = new Set(categories.map(category => category.categoryName));
+  if (uniqueCategoryNames.size !== categories.length) {
+    return {
+      isValid: false,
+      message: "Error: Duplicate category names are not allowed.",
+    };
+  }
+  return { isValid: true };
+}
+
+function validateScenarios(scenarios) {
+  // Check if there are duplicate scenario names
+  const uniqueScenarioNames = new Set(scenarios.map(scenario => scenario.scenarioName));
+  if (uniqueScenarioNames.size !== scenarios.length) {
+    return {
+      isValid: false,
+      message: "Error: Duplicate scenario names are not allowed.",
+    };
+  }
+  return { isValid: true };
+}
+
+function validateWeights(categories) {
+  // Check if the sum of weights is equal to 1
+  const sumOfWeights = categories.reduce((sum, category) => sum + category.categoryWeight, 0);
+  if (sumOfWeights !== 1) {
+    return {
+      isValid: false,
+      message: "Error: The sum of weights for all categories must be equal to 1(100%).",
+    };
+  }
+  return { isValid: true };
 }
 
 const downloadButton = document.getElementById("downloadCSV"); // Replace "downloadButton" with the actual ID of your button
