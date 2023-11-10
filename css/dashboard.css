@@ -248,3 +248,26 @@ th, td {
   top: 10px;
   left: 10px;
 }
+.js-no-categories,
+.js-no-results,
+.js-no-Scenarios {
+  display: flex;
+  width: 100%;
+  height: 80px;
+  background: #e2e2e2;
+  font-size: 23px;
+  font-weight: 800;
+  align-items: center;
+  justify-content: center;
+  margin: 10px 0;
+  border-radius: 5px;
+}
+
+.scenarios-header-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.scenarios-header-wrapper button{ 
+  padding: 10px 30px;
+}

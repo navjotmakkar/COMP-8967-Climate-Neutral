@@ -1,5 +1,6 @@
 import { firebaseConfig } from "./constants.js";
 import { categories, scenarios } from "./data.js";
+import uploadCSV from "./fileupload.js";
 // Initialize Firebase
 const firebaseApp = firebase.initializeApp(firebaseConfig);
 const userEmail = document.getElementById("user-email");
@@ -28,6 +29,17 @@ const categoryUpdateBtn = document.querySelector(".js-update-btn");
 const categorySubmitBtn = document.querySelector(".js-submit-btn");
 const hardReset = document.querySelector(".js-hard-reset");
 
+const fileInput = document.getElementById("csvFile");
+
+// Call uploadCSV function when the "Upload" button is clicked
+const uploadButton = document.getElementById("convertButton");
+
+// Call uploadCSV function when the file input value changes
+uploadButton.addEventListener("click", function () {
+  fileInput.value = "";
+  updateAllScenarios();
+  populateTable();
+});
 let allCategories, allScenarios;
 
 const scale = [
@@ -38,14 +50,22 @@ const scale = [
   { value: 5, label: "Excellent" },
 ];
 
-function populateCategoryForm(index) {
-  const formElements = categoryForm.querySelectorAll(".form-element");
+function cb(categories, scenarios) {
+  localStorage.setItem("categories", JSON.stringify(categories));
+  localStorage.setItem("scenarios", JSON.stringify(scenarios));
+}
 
-  formElements.forEach((element) => {
-    const category = allCategories[index];
-    const input = element.querySelector("input, select");
-    input.value = category[input.attributes.name.value];
-  });
+fileInput.addEventListener("change", (e) => uploadCSV(e, cb));
+
+function populateCategoryForm(index) {
+  allCategories = JSON.parse(localStorage.getItem("categories")) || [];
+  // const form = categoryForm.querySelector(".js-category-creation-form");
+  const categoryName = categoryForm.querySelector("#categoryName");
+  categoryName.value = allCategories[index].categoryName;
+  const categoryWeight = categoryForm.querySelector("#categoryWeight");
+  categoryWeight.value = allCategories[index].categoryWeight;
+  const categoryDirection = categoryForm.querySelector("#categoryDirection");
+  categoryDirection.value = allCategories[index].categoryDirection;
 }
 
 function deleteCategory(index) {
@@ -62,7 +82,7 @@ function deleteScenario(index) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  allCategories = [...JSON.parse(localStorage.getItem("categories"))] || [];
+  allCategories = JSON.parse(localStorage.getItem("categories")) || [];
   allScenarios = JSON.parse(localStorage.getItem("scenarios")) || [];
   const editCategoryWrapper = document.querySelector(".js-all-categories");
   const editScenario = document.querySelector(".js-table-body");
@@ -148,34 +168,41 @@ logoutBtn.addEventListener("click", handleLogout);
 
 function updateAllScenarios() {
   let categories = JSON.parse(localStorage.getItem("categories")) || []; // Parse categories from localStorage
+  let scenarios = JSON.parse(localStorage.getItem("scenarios")) || []; // Parse categories from localStorage
 
   const allCategoriesContainer = document.querySelector(".js-all-categories");
-  const noCategories =
-    allCategoriesContainer.querySelector(".js-no-categories");
-  if (categories.length) {
-    noCategories && noCategories.classList.add("hidden");
-    // Construct HTML for category tabs using map and join
-    const categoryTabsHTML = categories
-      .map((category, i) => {
-        return `<div class="category-tab" data-category-index=${i}>
+  const noCategories = document.querySelector(".js-no-categories");
+
+  // Construct HTML for category tabs using map and join
+  const categoryTabsHTML = categories
+    .map((category, i) => {
+      return `<div class="category-tab" data-category-index=${i}>
         <label>${category.categoryName} - ${
-          category.categoryWeight * 100
-        }%</label>
+        category.categoryWeight * 100
+      }%</label>
         <i class="fa-solid fa-pen-to-square fa-sm js-edit-icon" data-category-index=${i}></i>
         <i class="fa-solid fa-trash fa-sm js-trash-icon" data-category-index=${i}></i>
       </div>`;
-      })
-      .join("");
+    })
+    .join("");
 
-    // Set the innerHTML of the container with the generated HTML
-    allCategoriesContainer.innerHTML = categoryTabsHTML;
-    if (categories.length > 2) {
+  // Set the innerHTML of the container with the generated HTML
+  allCategoriesContainer.innerHTML = categoryTabsHTML;
+
+  if (!categories.length) {
+    noCategories.classList.remove("hidden");
+    allCategoriesContainer.classList.add("hidden");
+  } else {
+    noCategories.classList.add("hidden");
+    allCategoriesContainer.classList.remove("hidden");
+    if (scenarios.length) {
       // calculate result
       populateTable();
-    }
-  } else {
-    if (noCategories && noCategories.classList.contains("hidden")) {
-      noCategories.classList.remove("hidden");
+    } else {
+      const noScenariosAvailable = document.querySelector(".js-no-Scenarios");
+      const scenariosTable = document.querySelector(".scenarios-table");
+      noScenariosAvailable.classList.remove("hidden");
+      scenariosTable.classList.add("hidden");
     }
   }
 }
@@ -254,7 +281,13 @@ function openAddScenarioModel(scenario, index) {
 }
 
 addScenario.addEventListener("click", () => {
-  openAddScenarioModel();
+  const categories = JSON.parse(localStorage.getItem("categories")) || [];
+
+  if (categories.length >= 2) {
+    openAddScenarioModel();
+  } else {
+    alert("Please enter at least 2 categories before adding scenarios!");
+  }
 });
 
 closeBtn.addEventListener("click", () => {
@@ -348,6 +381,12 @@ function populateTable() {
   const categories = JSON.parse(localStorage.getItem("categories")) || [];
   const scenarios = JSON.parse(localStorage.getItem("scenarios")) || [];
 
+  if (scenarios.length) {
+    const noScenariosAvailable = document.querySelector(".js-no-Scenarios");
+    const scenariosTable = document.querySelector(".scenarios-table");
+    noScenariosAvailable.classList.add("hidden");
+    scenariosTable.classList.remove("hidden");
+  }
   // Create the header row with scenario names as columns
   const headerRow = document.createElement("tr");
   headerRow.innerHTML = "<th>Scenarios</th>";
@@ -373,7 +412,14 @@ function populateTable() {
 
     tableBody.appendChild(row);
   });
-  calculateMODMA();
+  if (scenarios.length >= 2) {
+    calculateMODMA();
+  } else {
+    const noResultsAvailable = document.querySelector(".js-no-results");
+    const rankingTable = document.querySelector(".js-ranking-table");
+    noResultsAvailable.classList.remove("hidden");
+    rankingTable.classList.add("hidden");
+  }
 }
 
 function plotGraph(categories, results) {
@@ -411,9 +457,16 @@ function populateResults() {
   tableBody.innerHTML = "";
 
   // Retrieve categories and scenarios from localStorage
-  const categories = [...JSON.parse(localStorage.getItem("categories"))] || [];
+  const categories = JSON.parse(localStorage.getItem("categories")) || [];
   let results = JSON.parse(localStorage.getItem("rankingTable"));
   const scenarios = JSON.parse(localStorage.getItem("scenarios")) || [];
+
+  if (results.length) {
+    const noResultsAvailable = document.querySelector(".js-no-results");
+    const rankingTable = document.querySelector(".js-ranking-table");
+    noResultsAvailable.classList.add("hidden");
+    rankingTable.classList.remove("hidden");
+  }
 
   results = results.map((result) => {
     const scenario = scenarios.find(
@@ -564,6 +617,85 @@ function calculateMODMA() {
 //   calculateMODMA();
 //   populateResults();
 // });
+
+function downloadCSV() {
+  const categories = JSON.parse(localStorage.getItem("categories")) || [];
+  const scenarios = JSON.parse(localStorage.getItem("scenarios")) || [];
+
+  // Function to convert an object to CSV row
+  function convertToCSVRow(obj) {
+    const values = Object.values(obj);
+    return values.map((value) => `"${value}"`).join(",");
+  }
+
+  // Prepare CSV content for categories
+  let categoryCSVContent = "Category,";
+
+  // Add header row for categories properties
+  const categoryPropertiesHeader = [
+    "categoryName",
+    "categoryWeight",
+    "categoryDirection",
+    "evaluationType",
+  ];
+  categoryCSVContent += `${categoryPropertiesHeader.join(",")}\n`;
+
+  // Add data rows for categories properties
+  categories.forEach((category) => {
+    const categoryPropertiesRow = [
+      category.categoryName,
+      category.categoryWeight,
+      category.categoryDirection,
+      category.evaluationType,
+    ];
+    const categoryPropertiesCsvRow = convertToCSVRow({
+      ...categoryPropertiesRow,
+    });
+    categoryCSVContent += `Category,${categoryPropertiesCsvRow}\n`;
+  });
+
+  // Prepare CSV content for scenarios
+  let scenarioCSVContent = "Scenarios,";
+
+  // Add header row for scenario names
+  const scenarioHeader = [
+    "scenarioName",
+    ...categories.map((category) => category.categoryName),
+  ];
+  scenarioCSVContent += `${scenarioHeader.join(",")}\n`;
+
+  // Add data rows for scenarios
+  scenarios.forEach((scenario) => {
+    let rowData = categories.map((category) => scenario[category.categoryName]);
+    rowData = [scenario.scenarioName, ...rowData];
+    const csvRow = convertToCSVRow({ ...rowData });
+    scenarioCSVContent += `Scenarios,${csvRow}\n`;
+  });
+
+  // Combine both category and scenario CSV content
+  const combinedCSVContent = categoryCSVContent + "\n" + scenarioCSVContent;
+
+  // Create a Blob containing the CSV data
+  const blob = new Blob([combinedCSVContent], {
+    type: "text/csv;charset=utf-8;",
+  });
+
+  // Create a download link and trigger the download
+  const link = document.createElement("a");
+  const url = URL.createObjectURL(blob);
+  link.setAttribute("href", url);
+  link.setAttribute("download", "data.csv");
+  link.style.display = "none";
+  document.body.appendChild(link);
+  link.click();
+
+  // Clean up
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}
+
+const downloadButton = document.getElementById("downloadCSV"); // Replace "downloadButton" with the actual ID of your button
+downloadButton.addEventListener("click", downloadCSV);
 
 updateAllScenarios();
 populateTable();

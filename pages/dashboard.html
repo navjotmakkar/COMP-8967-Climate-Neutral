@@ -28,6 +28,7 @@
     </header>
 
     <button class="js-hard-reset"> Reset </button>
+    
     <div class="content">
       <div class="content-box">
         <p>
@@ -52,13 +53,18 @@
         Add Category
       </button>
 
-      <div class="all-categories js-all-categories">
-        <p class="js-no-categories">No Categories available</p>
+      <p class="js-no-categories">No Categories available</p>
+      <div class="all-categories js-all-categories hidden">
       </div>
 
       <div class="scenarios-table-wrapper js-scenarios-table">
+        <div class="scenarios-header-wrapper">
         <h2>Scenario Table</h2>
-        <table class="scenarios-table">
+        <button id="downloadCSV" class="btn btn-secondary"> <i class="fa-solid fa-download"></i> </button>
+      </div>
+        <p class="js-no-Scenarios">No Scenarios available</p>
+
+        <table class="scenarios-table hidden">
           <thead></thead>
           <tbody class="js-table-body">
             <!-- Table body will be populated dynamically using JavaScript -->
@@ -71,7 +77,9 @@
 
       <!-- <button class="btn btn-secondary js-modma-btn">Perform M-O-D-M</button> -->
 
-      <div class="ranking-table-wrapper js-ranking-table">
+      <p class="js-no-results">No Results</p>
+
+      <div class="ranking-table-wrapper js-ranking-table hidden">
         <h2>Ranking Table (Best to Worst case scenario)</h2>
         <table class="scenarios-table">
           <thead></thead>
@@ -181,8 +189,8 @@
         </form>
       </div>
     </div>
-
+    <script src="../js/fileupload.js" type="module"></script>
     <script src="../js/dashboard.js" type="module"></script>
-    <script src="../js/fileupload.js"></script>
+    
   </body>
 </html>
