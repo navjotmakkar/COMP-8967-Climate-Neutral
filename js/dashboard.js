@@ -37,7 +37,7 @@ const uploadButton = document.getElementById("convertButton");
 // call clearData functiomn to clear scenarios, categories, ranking table and charts
 const clearDataButton = document.querySelector(".js-clear-data-btn");
 
-//call MODM analyse function which will calculate table, scores, and plot charts
+//call MODM function which will calculate table, scores, and plot charts
 const analyzeDataBtn = document.querySelector(".js-analyze-data-btn");
 
 // Call uploadCSV function when the file input value changes
@@ -418,6 +418,14 @@ function populateTable() {
 
     tableBody.appendChild(row);
   });
+  if (scenarios.length >= 2) {
+    calculateMODMA();
+  } else {
+    const noResultsAvailable = document.querySelector(".js-no-results");
+    const rankingTable = document.querySelector(".js-ranking-table");
+    noResultsAvailable.classList.remove("hidden");
+    rankingTable.classList.add("hidden");
+  }
 }
 
 function plotGraph(categories, results) {
