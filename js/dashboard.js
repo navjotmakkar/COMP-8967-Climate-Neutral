@@ -214,6 +214,8 @@ categoryForm.addEventListener("submit", (e) => {
   modal.style.display = "none";
 
   updateAllCategories();
+  // Reset the form after successfully adding a category
+  categoryForm.reset();
 });
 
 // Add this function to check if a category with the given name already exists
@@ -373,6 +375,8 @@ addScenarioForm.addEventListener("submit", (e) => {
 
   localStorage.setItem("scenarios", JSON.stringify([...scenarios, temp]));
   populateTable();
+  // Reset the form after successfully adding a scenario
+  addScenarioForm.reset();
   // Close the modal after submitting the form
   closeAddScenarioModal(); // Add this function to close the modal
 });
