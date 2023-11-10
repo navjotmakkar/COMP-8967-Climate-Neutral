@@ -7,7 +7,10 @@
       src="https://cdn.plot.ly/plotly-2.27.0.min.js"
       charset="utf-8"
     ></script>
-    <script src="https://kit.fontawesome.com/b28bb7b0be.js" crossorigin="anonymous"></script>
+    <script
+      src="https://kit.fontawesome.com/b28bb7b0be.js"
+      crossorigin="anonymous"
+    ></script>
     <link rel="stylesheet" href="../css/style.css" />
     <link rel="stylesheet" href="../css/dashboard.css" />
     <title>Dashboard</title>
@@ -28,7 +31,7 @@
     </header>
 
     <!-- <button class="js-hard-reset"> Reset </button> -->
-    
+
     <div class="content">
       <div class="content-box">
         <p>
@@ -54,14 +57,15 @@
       </button>
 
       <p class="js-no-categories">No Categories available</p>
-      <div class="all-categories js-all-categories hidden">
-      </div>
+      <div class="all-categories js-all-categories hidden"></div>
 
       <div class="scenarios-table-wrapper js-scenarios-table">
         <div class="scenarios-header-wrapper">
-        <h2>Scenario Table</h2>
-        <button id="downloadCSV" class="btn btn-secondary"> <i class="fa-solid fa-download"></i> </button>
-      </div>
+          <h2>Scenario Table</h2>
+          <button id="downloadCSV" class="btn btn-secondary">
+            <i class="fa-solid fa-download"></i>
+          </button>
+        </div>
         <p class="js-no-Scenarios">No Scenarios available</p>
 
         <table class="scenarios-table hidden">
@@ -93,11 +97,14 @@
         <h2>Results Insights</h2>
 
         <div class="weight-distribution js-wight-distribution">
-          <label class="category-weight-label">Category Weight distribution</label>
-
+          <label class="category-weight-label"
+            >Category Weight distribution</label
+          >
         </div>
         <div class="performance-score js-performance-score">
-          <label class="performance-score-label">Scenario Performance Score</label>
+          <label class="performance-score-label"
+            >Scenario Performance Score</label
+          >
         </div>
 
         <div class="best-case-scenario js-best-case-scenario">
@@ -109,9 +116,7 @@
           <label class="worst-case-scenario-label">Worst Case Scenario</label>
           <pre></pre>
         </div>
-
       </div>
-
     </div>
 
     <div class="modal js-add-scenario-modal">
@@ -122,7 +127,9 @@
             <label for="scenarioName" class="js-label">Scenario Name</label>
             <input type="text" id="scenarioName" class="js-input" required />
           </div>
-          <div class="add-scenario-form-container js-add-scenario-form-container"></div>
+          <div
+            class="add-scenario-form-container js-add-scenario-form-container"
+          ></div>
 
           <button
             type="submit"
@@ -130,7 +137,10 @@
           >
             Submit
           </button>
-          <button type="submit" class="btn btn-primary js-update-scenario-btn hidden">
+          <button
+            type="submit"
+            class="btn btn-primary js-update-scenario-btn hidden"
+          >
             Update
           </button>
         </form>
@@ -143,7 +153,13 @@
         <form class="category-creation-form js-category-creation-form">
           <div class="form-element">
             <label for="categoryName" class="js-label">Category Name:</label>
-            <input type="text" id="categoryName" class="js-input" required name="categoryName" />
+            <input
+              type="text"
+              id="categoryName"
+              class="js-input"
+              required
+              name="categoryName"
+            />
           </div>
 
           <div class="form-element">
@@ -165,7 +181,12 @@
             <label for="categoryDirection" class="js-label"
               >Category Direction:</label
             >
-            <select id="categoryDirection" class="js-select" name="categoryDirection" required>
+            <select
+              id="categoryDirection"
+              class="js-select"
+              name="categoryDirection"
+              required
+            >
               <option value="positive">Positive</option>
               <option value="negative">Negative</option>
             </select>
@@ -174,7 +195,12 @@
             <label for="evaluationType" class="js-label"
               >Category Evaluation Type:</label
             >
-            <select id="evaluationType" class="js-select" name="evaluationType" required>
+            <select
+              id="evaluationType"
+              class="js-select"
+              name="evaluationType"
+              required
+            >
               <option value="numerical">Numerical</option>
               <!-- <option value="linear">Linear</option> -->
               <option value="descriptive">Descriptive</option>
@@ -191,6 +217,5 @@
     </div>
     <script src="../js/fileupload.js" type="module"></script>
     <script src="../js/dashboard.js" type="module"></script>
-    
   </body>
 </html>
