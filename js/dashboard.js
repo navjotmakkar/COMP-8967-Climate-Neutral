@@ -178,7 +178,22 @@ window.addEventListener("click", (event) => {
 
 categoryForm.addEventListener("submit", (e) => {
   e.preventDefault();
+  
+  // Get the input values
   const categoryName = document.getElementById("categoryName").value;
+
+  // Check if a category with the same name already exists
+  if (isCategoryNameExists(categoryName)) {
+    alert("Category with the same name already exists. Please choose a different name.");
+    return;
+  }
+
+  // Check if adding the new category will make the total weight exceed 1
+  if (!isCategoryWeightWithinLimit()) {
+    alert("Adding this category will make the total weight exceed 100%.");
+    return;
+  }
+  
   const categoryWeight = parseFloat(
     document.getElementById("categoryWeight").value
   );
@@ -199,6 +214,26 @@ categoryForm.addEventListener("submit", (e) => {
   modal.style.display = "none";
 
   updateAllCategories();
+});
+
+// Add this function to check if a category with the given name already exists
+function isCategoryNameExists(name) {
+  const categories = JSON.parse(localStorage.getItem("categories")) || [];
+  return categories.some(category => category.categoryName === name);
+}
+
+// Function to check if adding the new category will make the total weight exceed 1
+function isCategoryWeightWithinLimit() {
+  const categories = JSON.parse(localStorage.getItem("categories")) || [];
+  const totalWeight = categories.reduce((sum, category) => sum + category.categoryWeight, 0);
+  const newCategoryWeight = parseFloat(document.getElementById("categoryWeight").value) || 0;
+  return totalWeight + newCategoryWeight <= 1;
+}
+
+// Add the "Create Table" button event listener
+const createTableBtn = document.querySelector(".js-create-table-btn");
+createTableBtn.addEventListener("click", () => {
+  calculateMODMA();
 });
 
 function populateTable() {
@@ -229,7 +264,6 @@ function populateTable() {
 
     tableBody.appendChild(row);
   });
-  calculateMODMA();
 }
 
 function plotGraph(categories, results) {
@@ -318,6 +352,13 @@ function populateResults() {
 
 addScenarioForm.addEventListener("submit", (e) => {
   e.preventDefault();
+  
+  // Check if the sum of category weights is equal to 1
+  if (!isCategoryWeightValid()) {
+    alert("The sum of category weights must be equal to 100%.");
+    return;
+  }
+
   const scenarios = JSON.parse(localStorage.getItem("scenarios")) || [];
   const temp = {};
   const scenarioName = addScenarioForm.querySelector("#scenarioName");
@@ -332,7 +373,24 @@ addScenarioForm.addEventListener("submit", (e) => {
 
   localStorage.setItem("scenarios", JSON.stringify([...scenarios, temp]));
   populateTable();
+  // Close the modal after submitting the form
+  closeAddScenarioModal(); // Add this function to close the modal
 });
+
+// Function to check if the sum of category weights is equal to 1
+function isCategoryWeightValid() {
+  const categories = JSON.parse(localStorage.getItem("categories")) || [];
+  const totalWeight = categories.reduce((sum, category) => sum + category.categoryWeight, 0);
+  return totalWeight === 1;
+}
+
+// Function to close the modal
+function closeAddScenarioModal() {
+  addScenarioModel.style.display = "none";  // Hide the modal by setting its display property to "none"
+  
+  // Optionally, you can clear the form fields after closing the modal
+  addScenarioForm.reset();
+}
 
 function calculateMODMA() {
   const categories = JSON.parse(localStorage.getItem("categories")) || [];
