@@ -1,11 +1,12 @@
 import { firebaseConfig } from "./constants.js";
-
+import { categories, scenarios } from "./data.js";
+import uploadCSV from "./fileupload.js";
 // Initialize Firebase
 const firebaseApp = firebase.initializeApp(firebaseConfig);
 const userEmail = document.getElementById("user-email");
 const logoutBtn = document.getElementById("user-logout");
 const modalBtn = document.querySelector(".js-modal-btn");
-const modal = document.querySelector(".js-modal");
+const modal = document.querySelector(".js-modal-add-category");
 const closeBtn = document.querySelector(".js-close");
 const categoryForm = document.querySelector(".js-category-creation-form");
 const addScenario = document.querySelector(".js-modal-add-scenario-btn");
@@ -24,14 +25,106 @@ const bestCaseScenario = document.querySelector(".js-best-case-scenario > pre");
 const worstCaseScenario = document.querySelector(
   ".js-worst-case-scenario > pre"
 );
+const categoryUpdateBtn = document.querySelector(".js-update-btn");
+const categorySubmitBtn = document.querySelector(".js-submit-btn");
+const hardReset = document.querySelector(".js-hard-reset");
 
-const scale = {
-  low: 1,
-  belowAverage: 2,
-  average: 3,
-  good: 4,
-  excellent: 5,
-};
+const fileInput = document.getElementById("csvFile");
+
+// Call uploadCSV function when the "Upload" button is clicked
+const uploadButton = document.getElementById("convertButton");
+
+// Call uploadCSV function when the file input value changes
+uploadButton.addEventListener("click", function () {
+  fileInput.value = "";
+  updateAllScenarios();
+  populateTable();
+});
+let allCategories, allScenarios;
+
+const scale = [
+  { value: 1, label: "Low" },
+  { value: 2, label: "Below Average" },
+  { value: 3, label: "Average" },
+  { value: 4, label: "Good" },
+  { value: 5, label: "Excellent" },
+];
+
+function cb(categories, scenarios) {
+  localStorage.setItem("categories", JSON.stringify(categories));
+  localStorage.setItem("scenarios", JSON.stringify(scenarios));
+}
+
+fileInput.addEventListener("change", (e) => uploadCSV(e, cb));
+
+function populateCategoryForm(index) {
+  allCategories = JSON.parse(localStorage.getItem("categories")) || [];
+  // const form = categoryForm.querySelector(".js-category-creation-form");
+  const categoryName = categoryForm.querySelector("#categoryName");
+  categoryName.value = allCategories[index].categoryName;
+  const categoryWeight = categoryForm.querySelector("#categoryWeight");
+  categoryWeight.value = allCategories[index].categoryWeight;
+  const categoryDirection = categoryForm.querySelector("#categoryDirection");
+  categoryDirection.value = allCategories[index].categoryDirection;
+}
+
+function deleteCategory(index) {
+  allCategories.splice(index, 1);
+  localStorage.setItem("categories", JSON.stringify(allCategories));
+  updateAllScenarios();
+}
+
+function deleteScenario(index) {
+  allScenarios = JSON.parse(localStorage.getItem("scenarios")) || [];
+  allScenarios.splice(index, 1);
+  localStorage.setItem("scenarios", JSON.stringify(allScenarios));
+  updateAllScenarios();
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  allCategories = JSON.parse(localStorage.getItem("categories")) || [];
+  allScenarios = JSON.parse(localStorage.getItem("scenarios")) || [];
+  const editCategoryWrapper = document.querySelector(".js-all-categories");
+  const editScenario = document.querySelector(".js-table-body");
+
+  editCategoryWrapper.addEventListener("click", (e) => {
+    if (e.target.classList.contains("js-edit-icon")) {
+      modal.style.display = "block";
+      categoryForm
+        .querySelector("#categoryName")
+        .setAttribute("disabled", true);
+      categoryForm
+        .querySelector("#evaluationType")
+        .setAttribute("disabled", true);
+      categorySubmitBtn.classList.add("hidden");
+      categoryUpdateBtn.classList.remove("hidden");
+      populateCategoryForm(e.target.attributes["data-category-index"].value);
+    } else if (e.target.classList.contains("js-trash-icon")) {
+      deleteCategory(
+        parseInt(e.target.attributes["data-category-index"].value)
+      );
+    }
+  });
+
+  editScenario.addEventListener("click", (e) => {
+    if (e.target.classList.contains("js-edit-scenario-icon")) {
+      const index = parseInt(e.target.attributes["data-index"].value);
+      openAddScenarioModel(allScenarios[index], index);
+    }
+
+    if (e.target.classList.contains("js-trash-scenario-icon")) {
+      const index = parseInt(e.target.attributes["data-index"].value);
+      deleteScenario(index);
+    }
+  });
+});
+
+// hardReset.addEventListener("click", () => {
+//   localStorage.setItem("categories", JSON.stringify(categories));
+//   localStorage.setItem("scenarios", JSON.stringify(scenarios));
+//   updateAllScenarios();
+//   populateTable();
+// });
 
 // normalization
 
@@ -73,194 +166,227 @@ const handleLogout = () => {
 
 logoutBtn.addEventListener("click", handleLogout);
 
-function updateAllCategories() {
+function updateAllScenarios() {
   let categories = JSON.parse(localStorage.getItem("categories")) || []; // Parse categories from localStorage
+  let scenarios = JSON.parse(localStorage.getItem("scenarios")) || []; // Parse categories from localStorage
 
   const allCategoriesContainer = document.querySelector(".js-all-categories");
+  const noCategories = document.querySelector(".js-no-categories");
 
-  // Clear the content of .js-all-categories
-  allCategoriesContainer.innerHTML = "";
-  
-  const noCategories =
-    allCategoriesContainer.querySelector(".js-no-categories");
-  if (categories.length) {
-    noCategories && noCategories.classList.add("hidden");
-    // Construct HTML for category tabs using map and join
-    const categoryTabsHTML = categories
-      .map((category) => {
-        return `<label class="category-tab">${category.categoryName} - ${(category.categoryWeight * 100)}%</label>`;
-      })
-      .join("");
+  // Construct HTML for category tabs using map and join
+  const categoryTabsHTML = categories
+    .map((category, i) => {
+      return `<div class="category-tab" data-category-index=${i}>
+        <label>${category.categoryName} - ${
+        category.categoryWeight * 100
+      }%</label>
+        <i class="fa-solid fa-pen-to-square fa-sm js-edit-icon" data-category-index=${i}></i>
+        <i class="fa-solid fa-trash fa-sm js-trash-icon" data-category-index=${i}></i>
+      </div>`;
+    })
+    .join("");
 
-    // Set the innerHTML of the container with the generated HTML
-    allCategoriesContainer.innerHTML = categoryTabsHTML;
+  // Set the innerHTML of the container with the generated HTML
+  allCategoriesContainer.innerHTML = categoryTabsHTML;
+
+  if (!categories.length) {
+    noCategories.classList.remove("hidden");
+    allCategoriesContainer.classList.add("hidden");
   } else {
-    if (noCategories && noCategories.classList.contains("hidden")) {
-      noCategories.classList.remove("hidden");
+    noCategories.classList.add("hidden");
+    allCategoriesContainer.classList.remove("hidden");
+    if (scenarios.length) {
+      // calculate result
+      populateTable();
+    } else {
+      const noScenariosAvailable = document.querySelector(".js-no-Scenarios");
+      const scenariosTable = document.querySelector(".scenarios-table");
+      noScenariosAvailable.classList.remove("hidden");
+      scenariosTable.classList.add("hidden");
     }
   }
 }
 
-modalBtn.addEventListener("click", () => {
+function openCategoryModel() {
   modal.style.display = "block";
+  categoryForm.querySelector("#categoryName").removeAttribute("disabled");
+  categoryForm.querySelector("#evaluationType").removeAttribute("disabled");
+  categoryForm.reset();
+  categorySubmitBtn.classList.remove("hidden");
+  categoryUpdateBtn.classList.add("hidden");
+}
+
+modalBtn.addEventListener("click", () => {
+  openCategoryModel();
 });
 
-addScenario.addEventListener("click", () => {
+function createInputField(type, id, value = "") {
+  const inputField = `<input type="${type}" class="js-input" id="${id}" value="${value}" required="true" />`;
+  return inputField;
+}
+
+function createSelectField(id, options, value = "") {
+  let selectField = `<select class="js-input" id="${id}" value="${value}" required="true">`;
+  options.forEach((option) => {
+    selectField += `<option value="${option.value}">${option.label}</option>`;
+  });
+  selectField += "</select>";
+  return selectField;
+}
+
+function openAddScenarioModel(scenario, index) {
   jsAddScenarioFormContainer.innerHTML = "";
   addScenarioModel.style.display = "block";
-
+  let value;
+  let inputField;
   const categories = JSON.parse(localStorage.getItem("categories")) || [];
+  const scenarios = JSON.parse(localStorage.getItem("scenarios")) || [];
+
   categories.forEach((category) => {
-    const categoryElement = document.createElement("div");
-    categoryElement.className = "form-element";
-
-    const label = document.createElement("label");
-    label.className = "js-label";
-    label.textContent = `${category.categoryName}`;
-    categoryElement.appendChild(label);
-
-    const inputField = document.createElement("input");
-    if (category.evaluationType == "numerical") {
-      inputField.type = "number";
-      inputField.className = "js-input";
-      inputField.id = `js-${category.categoryName.replace(/\s/g, "")}`; // Remove spaces from category name for ID
-      inputField.required = true;
-      categoryElement.appendChild(inputField);
+    const id = `js-${category.categoryName.replace(/\s/g, "")}`;
+    if (scenario) {
+      const updatedScenario = scenarios[index];
+      if (category.evaluationType === "numerical") {
+        value = updatedScenario[category.categoryName] || "";
+        inputField = createInputField("number", id, value);
+      } else {
+        value = updatedScenario[category.categoryName] || 1;
+        inputField = createSelectField(id, scale, value);
+      }
     } else {
-      const selectField = document.createElement("select");
-      // selectField.type = "select";
-      selectField.className = "js-input";
-      selectField.id = `js-${category.categoryName.replace(/\s/g, "")}`; // Remove spaces from category name for ID
-      selectField.required = true;
-      // Options for descriptive input
-      const highOption = document.createElement("option");
-      highOption.value = "5";
-      highOption.textContent = "High";
-      selectField.appendChild(highOption);
-
-      const mediumHighOption = document.createElement("option");
-      mediumHighOption.value = "4";
-      mediumHighOption.textContent = "Medium-High";
-      selectField.appendChild(mediumHighOption);
-
-      const mediumOption = document.createElement("option");
-      mediumOption.value = "3";
-      mediumOption.textContent = "Medium";
-      selectField.appendChild(mediumOption);
-
-      const lowMediumOption = document.createElement("option");
-      lowMediumOption.value = "2";
-      lowMediumOption.textContent = "Low-Medium";
-      selectField.appendChild(lowMediumOption);
-
-      const lowOption = document.createElement("option");
-      lowOption.value = "1";
-      lowOption.textContent = "Low";
-      selectField.appendChild(lowOption);
-      categoryElement.appendChild(selectField);
+      if (category.evaluationType === "numerical") {
+        inputField = createInputField("number", id, "");
+      } else {
+        inputField = createSelectField(id, scale, 1);
+      }
     }
 
-    jsAddScenarioFormContainer.appendChild(categoryElement);
+    const categoryElement = `<div class="form-element">
+                                <label class="js-label">${category.categoryName}</label>
+                                ${inputField}
+                             </div>`;
+
+    jsAddScenarioFormContainer.insertAdjacentHTML("beforeend", categoryElement);
   });
+  if (scenario) {
+    const categoryNameInput = document.querySelector(
+      "form.js-add-scenario-form #scenarioName"
+    );
+    const updateScenarioBtn = document.querySelector(".js-update-scenario-btn");
+    updateScenarioBtn.classList.remove("hidden");
+    updateScenarioBtn.setAttribute("data-index", index);
+    jsAddScenarioSubmitBtn.classList.add("hidden");
+    categoryNameInput.value = scenario.scenarioName;
+  }
+}
+
+addScenario.addEventListener("click", () => {
+  const categories = JSON.parse(localStorage.getItem("categories")) || [];
+
+  if (categories.length >= 2) {
+    openAddScenarioModel();
+  } else {
+    alert("Please enter at least 2 categories before adding scenarios!");
+  }
 });
 
 closeBtn.addEventListener("click", () => {
   modal.style.display = "none";
+  categoryForm.reset();
+  handleClearForm(categoryForm);
 });
 addScenarioModelClose.addEventListener("click", () => {
-  addScenarioModel.style.display = "none";
+  handleAddCategoryModelClose();
+  handleClearForm(addScenarioForm);
 });
 
 window.addEventListener("click", (event) => {
   if (event.target === modal) {
     modal.style.display = "none";
+    handleClearForm(categoryForm);
   }
   if (event.target === addScenarioModel) {
-    addScenarioModel.style.display = "none";
+    handleAddCategoryModelClose();
+    handleClearForm(addScenarioForm);
   }
 });
+
+function handleClearForm(form) {
+  form.reset();
+}
+
+function updateScenarioForNewCategory(newCategory) {
+  const { categoryName, categoryWeight } = newCategory;
+
+  let allScenarios = JSON.parse(localStorage.getItem("scenarios")) || [];
+
+  allScenarios = allScenarios.map((s) => {
+    if (!s[categoryName]) {
+      const temp = { ...s };
+      temp[categoryName] = "-";
+      return temp;
+    }
+    return s;
+  });
+  localStorage.setItem("scenarios", JSON.stringify(allScenarios));
+}
 
 categoryForm.addEventListener("submit", (e) => {
   e.preventDefault();
-  
-  // Get the input values
-  const categoryName = document.getElementById("categoryName").value;
-
-  // Check if a category with the same name already exists
-  if (isCategoryNameExists(categoryName)) {
-    alert("Category with the same name already exists. Please choose a different name.");
-    return;
-  }
-
-  // Check if adding the new category will make the total weight exceed 1
-  if (!isCategoryWeightWithinLimit()) {
-    alert("Adding this category will make the total weight exceed 100%.");
-    return;
-  }
-  
-  const categoryWeight = parseFloat(
-    document.getElementById("categoryWeight").value
-  );
-  const categoryDirection = document.getElementById("categoryDirection").value;
-  const evaluationType = document.getElementById("evaluationType").value;
   let categories = JSON.parse(localStorage.getItem("categories")) || [];
-  categories = [
-    ...categories,
-    {
-      categoryName: categoryName,
-      categoryWeight: categoryWeight,
-      categoryDirection: categoryDirection,
-      evaluationType: evaluationType,
-    },
-  ];
-  localStorage.setItem("categories", JSON.stringify(categories));
-  // Close the modal after processing the input
+  const categoryName = document.getElementById("categoryName");
+  const categoryWeight = document.getElementById("categoryWeight");
+  const categoryDirection = document.getElementById("categoryDirection");
+  const evaluationType = document.getElementById("evaluationType");
+  const temp = {
+    categoryName: categoryName.value,
+    categoryWeight: parseFloat(categoryWeight.value),
+    categoryDirection: categoryDirection.value,
+    evaluationType: evaluationType.value,
+  };
+  if (e.submitter.classList.contains("js-update-btn")) {
+    let indexToBeUpdated = undefined;
+    const categoryToBeUpdated = categories.find((c, i) => {
+      if (c.categoryName == categoryName.value) {
+        indexToBeUpdated = i;
+        return true;
+      }
+    });
+    categories[indexToBeUpdated] = temp;
+    localStorage.setItem("categories", JSON.stringify(categories));
+  } else {
+    categories = [
+      ...categories,
+      {
+        categoryName: categoryName.value,
+        categoryWeight: categoryWeight.value,
+        categoryDirection: categoryDirection.value,
+        evaluationType: evaluationType.value,
+      },
+    ];
+    localStorage.setItem("categories", JSON.stringify(categories));
+    updateScenarioForNewCategory(temp);
+    // Close the modal after processing the input
+  }
+  handleClearForm(categoryForm);
   modal.style.display = "none";
 
-  updateAllCategories();
-  // Reset the form after successfully adding a category
-  categoryForm.reset();
-});
-
-// Add this function to check if a category with the given name already exists
-function isCategoryNameExists(name) {
-  const categories = JSON.parse(localStorage.getItem("categories")) || [];
-  return categories.some(category => category.categoryName === name);
-}
-
-// Function to check if adding the new category will make the total weight exceed 1
-function isCategoryWeightWithinLimit() {
-  const categories = JSON.parse(localStorage.getItem("categories")) || [];
-  const totalWeight = categories.reduce((sum, category) => sum + category.categoryWeight, 0);
-  const newCategoryWeight = parseFloat(document.getElementById("categoryWeight").value) || 0;
-  return totalWeight + newCategoryWeight <= 1;
-}
-
-// Add the "Create Table" button event listener
-const createTableBtn = document.querySelector(".js-create-table-btn");
-createTableBtn.addEventListener("click", () => {
-  calculateMODMA();
-});
-
-document.querySelector(".js-reset-btn").addEventListener("click", () => {
-  // Clear categories and scenarios from localStorage
-  localStorage.removeItem("categories");
-  localStorage.removeItem("scenarios");
-  localStorage.removeItem("rankingTable");
-
-  // Update the web page to reflect the changes
-  updateAllCategories();
-  populateTable();
-  populateResults();
+  updateAllScenarios();
 });
 
 function populateTable() {
   const tableBody = document.querySelector(".js-table-body");
   tableBody.innerHTML = "";
   // Retrieve categories and scenarios from localStorage
-  const categories = [...JSON.parse(localStorage.getItem("categories"))] || [];
+  const categories = JSON.parse(localStorage.getItem("categories")) || [];
   const scenarios = JSON.parse(localStorage.getItem("scenarios")) || [];
 
+  if (scenarios.length) {
+    const noScenariosAvailable = document.querySelector(".js-no-Scenarios");
+    const scenariosTable = document.querySelector(".scenarios-table");
+    noScenariosAvailable.classList.add("hidden");
+    scenariosTable.classList.remove("hidden");
+  }
   // Create the header row with scenario names as columns
   const headerRow = document.createElement("tr");
   headerRow.innerHTML = "<th>Scenarios</th>";
@@ -270,18 +396,30 @@ function populateTable() {
   tableBody.appendChild(headerRow);
 
   // Iterate through categories and populate the table dynamically
-  scenarios.forEach((scenario) => {
+  scenarios.forEach((scenario, i) => {
     const row = document.createElement("tr");
-    row.innerHTML = `<td>${scenario.scenarioName}</td>`;
+    row.innerHTML = `<td class="scenario-name-table-cell"> 
+      <span>${scenario.scenarioName} </span>    
+        <i class="fa-solid fa-pen-to-square fa-sm js-edit-scenario-icon" data-index=${i}></i>
+        <i class="fa-solid fa-trash fa-sm js-trash-scenario-icon" data-index=${i}></i>
+    </td>`;
 
     // Populate category data for each scenario
 
     categories.forEach((category) => {
-      row.innerHTML += `<td>${scenario[category.categoryName]}</td>`;
+      row.innerHTML += `<td>${scenario[category.categoryName] || "-"}</td>`;
     });
 
     tableBody.appendChild(row);
   });
+  if (scenarios.length >= 2) {
+    calculateMODMA();
+  } else {
+    const noResultsAvailable = document.querySelector(".js-no-results");
+    const rankingTable = document.querySelector(".js-ranking-table");
+    noResultsAvailable.classList.remove("hidden");
+    rankingTable.classList.add("hidden");
+  }
 }
 
 function plotGraph(categories, results) {
@@ -319,9 +457,16 @@ function populateResults() {
   tableBody.innerHTML = "";
 
   // Retrieve categories and scenarios from localStorage
-  const categories = [...JSON.parse(localStorage.getItem("categories"))] || [];
+  const categories = JSON.parse(localStorage.getItem("categories")) || [];
   let results = JSON.parse(localStorage.getItem("rankingTable"));
   const scenarios = JSON.parse(localStorage.getItem("scenarios")) || [];
+
+  if (results.length) {
+    const noResultsAvailable = document.querySelector(".js-no-results");
+    const rankingTable = document.querySelector(".js-ranking-table");
+    noResultsAvailable.classList.add("hidden");
+    rankingTable.classList.remove("hidden");
+  }
 
   results = results.map((result) => {
     const scenario = scenarios.find(
@@ -370,15 +515,9 @@ function populateResults() {
 
 addScenarioForm.addEventListener("submit", (e) => {
   e.preventDefault();
-  
-  // Check if the sum of category weights is equal to 1
-  if (!isCategoryWeightValid()) {
-    alert("The sum of category weights must be equal to 100%.");
-    return;
-  }
-
   const scenarios = JSON.parse(localStorage.getItem("scenarios")) || [];
   const temp = {};
+
   const scenarioName = addScenarioForm.querySelector("#scenarioName");
   const formElement =
     jsAddScenarioFormContainer.querySelectorAll(".form-element");
@@ -388,28 +527,33 @@ addScenarioForm.addEventListener("submit", (e) => {
     const input = element.querySelector("input, select");
     temp[label.textContent] = input.value;
   });
-
-  localStorage.setItem("scenarios", JSON.stringify([...scenarios, temp]));
+  if (e.submitter.classList.contains("js-update-scenario-btn")) {
+    const index = e.submitter.attributes["data-index"].value;
+    scenarios[index] = { ...scenarios[index], ...temp };
+    console.log(scenarios);
+    localStorage.setItem("scenarios", JSON.stringify(scenarios));
+    const categoryNameInput = document.querySelector(
+      "form.js-add-scenario-form #scenarioName"
+    );
+    const updateScenarioBtn = document.querySelector(".js-update-scenario-btn");
+    updateScenarioBtn.classList.add("hidden");
+    jsAddScenarioSubmitBtn.classList.remove("hidden");
+  } else {
+    localStorage.setItem("scenarios", JSON.stringify([...scenarios, temp]));
+  }
+  handleAddCategoryModelClose();
+  handleClearForm(addScenarioForm);
   populateTable();
-  // Reset the form after successfully adding a scenario
-  addScenarioForm.reset();
-  // Close the modal after submitting the form
-  closeAddScenarioModal(); // Add this function to close the modal
 });
 
-// Function to check if the sum of category weights is equal to 1
-function isCategoryWeightValid() {
-  const categories = JSON.parse(localStorage.getItem("categories")) || [];
-  const totalWeight = categories.reduce((sum, category) => sum + category.categoryWeight, 0);
-  return totalWeight === 1;
-}
-
-// Function to close the modal
-function closeAddScenarioModal() {
-  addScenarioModel.style.display = "none";  // Hide the modal by setting its display property to "none"
-  
-  // Optionally, you can clear the form fields after closing the modal
-  addScenarioForm.reset();
+function handleAddCategoryModelClose() {
+  const categoryNameInput = document.querySelector(
+    "form.js-add-scenario-form #scenarioName"
+  );
+  const updateScenarioBtn = document.querySelector(".js-update-scenario-btn");
+  updateScenarioBtn.classList.add("hidden");
+  jsAddScenarioSubmitBtn.classList.remove("hidden");
+  addScenarioModel.style.display = "none";
 }
 
 function calculateMODMA() {
@@ -422,12 +566,20 @@ function calculateMODMA() {
   categories.forEach((category) => {
     maxValues[category.categoryName] = Math.max(
       ...scenarios.map((scenario) =>
-        parseFloat(scenario[category.categoryName])
+        parseFloat(
+          scenario[category.categoryName] == "-"
+            ? 0
+            : scenario[category.categoryName]
+        )
       )
     );
     minValues[category.categoryName] = Math.min(
       ...scenarios.map((scenario) =>
-        parseFloat(scenario[category.categoryName])
+        parseFloat(
+          scenario[category.categoryName] == "-"
+            ? 0
+            : scenario[category.categoryName]
+        )
       )
     );
   });
@@ -439,12 +591,16 @@ function calculateMODMA() {
     };
     categories.forEach((category) => {
       const value = parseFloat(scenario[category.categoryName]);
-      if (category.categoryDirection === "positive") {
-        normalizedScenario[category.categoryName] =
-          value / maxValues[category.categoryName];
-      } else if (category.categoryDirection === "negative") {
-        normalizedScenario[category.categoryName] =
-          minValues[category.categoryName] / value;
+      if (isNaN(value)) {
+        normalizedScenario[category.categoryName] = 0;
+      } else {
+        if (category.categoryDirection === "positive") {
+          normalizedScenario[category.categoryName] =
+            value / maxValues[category.categoryName];
+        } else if (category.categoryDirection === "negative") {
+          normalizedScenario[category.categoryName] =
+            minValues[category.categoryName] / value;
+        }
       }
 
       // Assign weight and calculate performance score
@@ -462,5 +618,84 @@ function calculateMODMA() {
 //   populateResults();
 // });
 
-updateAllCategories();
+function downloadCSV() {
+  const categories = JSON.parse(localStorage.getItem("categories")) || [];
+  const scenarios = JSON.parse(localStorage.getItem("scenarios")) || [];
+
+  // Function to convert an object to CSV row
+  function convertToCSVRow(obj) {
+    const values = Object.values(obj);
+    return values.map((value) => `"${value}"`).join(",");
+  }
+
+  // Prepare CSV content for categories
+  let categoryCSVContent = "Category,";
+
+  // Add header row for categories properties
+  const categoryPropertiesHeader = [
+    "categoryName",
+    "categoryWeight",
+    "categoryDirection",
+    "evaluationType",
+  ];
+  categoryCSVContent += `${categoryPropertiesHeader.join(",")}\n`;
+
+  // Add data rows for categories properties
+  categories.forEach((category) => {
+    const categoryPropertiesRow = [
+      category.categoryName,
+      category.categoryWeight,
+      category.categoryDirection,
+      category.evaluationType,
+    ];
+    const categoryPropertiesCsvRow = convertToCSVRow({
+      ...categoryPropertiesRow,
+    });
+    categoryCSVContent += `Category,${categoryPropertiesCsvRow}\n`;
+  });
+
+  // Prepare CSV content for scenarios
+  let scenarioCSVContent = "Scenarios,";
+
+  // Add header row for scenario names
+  const scenarioHeader = [
+    "scenarioName",
+    ...categories.map((category) => category.categoryName),
+  ];
+  scenarioCSVContent += `${scenarioHeader.join(",")}\n`;
+
+  // Add data rows for scenarios
+  scenarios.forEach((scenario) => {
+    let rowData = categories.map((category) => scenario[category.categoryName]);
+    rowData = [scenario.scenarioName, ...rowData];
+    const csvRow = convertToCSVRow({ ...rowData });
+    scenarioCSVContent += `Scenarios,${csvRow}\n`;
+  });
+
+  // Combine both category and scenario CSV content
+  const combinedCSVContent = categoryCSVContent + "\n" + scenarioCSVContent;
+
+  // Create a Blob containing the CSV data
+  const blob = new Blob([combinedCSVContent], {
+    type: "text/csv;charset=utf-8;",
+  });
+
+  // Create a download link and trigger the download
+  const link = document.createElement("a");
+  const url = URL.createObjectURL(blob);
+  link.setAttribute("href", url);
+  link.setAttribute("download", "data.csv");
+  link.style.display = "none";
+  document.body.appendChild(link);
+  link.click();
+
+  // Clean up
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}
+
+const downloadButton = document.getElementById("downloadCSV"); // Replace "downloadButton" with the actual ID of your button
+downloadButton.addEventListener("click", downloadCSV);
+
+updateAllScenarios();
 populateTable();

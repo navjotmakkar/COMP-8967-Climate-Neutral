@@ -7,6 +7,10 @@
       src="https://cdn.plot.ly/plotly-2.27.0.min.js"
       charset="utf-8"
     ></script>
+    <script
+      src="https://kit.fontawesome.com/b28bb7b0be.js"
+      crossorigin="anonymous"
+    ></script>
     <link rel="stylesheet" href="../css/style.css" />
     <link rel="stylesheet" href="../css/dashboard.css" />
     <title>Dashboard</title>
@@ -25,6 +29,8 @@
         </div>
       </nav>
     </header>
+
+    <!-- <button class="js-hard-reset"> Reset </button> -->
 
     <div class="content">
       <div class="content-box">
@@ -50,14 +56,19 @@
         Add Category
       </button>
 
-      <div class="all-categories js-all-categories">
-        <p class="js-no-categories">No Categories available</p>
-        <!-- <label class="category-tab">abc</label> -->
-      </div>
+      <p class="js-no-categories">No Categories available</p>
+      <div class="all-categories js-all-categories hidden"></div>
 
       <div class="scenarios-table-wrapper js-scenarios-table">
-        <h2>Scenario Table</h2>
-        <table class="scenarios-table">
+        <div class="scenarios-header-wrapper">
+          <h2>Scenario Table</h2>
+          <button id="downloadCSV" class="btn btn-secondary">
+            <i class="fa-solid fa-download"></i>
+          </button>
+        </div>
+        <p class="js-no-Scenarios">No Scenarios available</p>
+
+        <table class="scenarios-table hidden">
           <thead></thead>
           <tbody class="js-table-body">
             <!-- Table body will be populated dynamically using JavaScript -->
@@ -69,14 +80,10 @@
       </div>
 
       <!-- <button class="btn btn-secondary js-modma-btn">Perform M-O-D-M</button> -->
-      <!-- Add the "Create Table" button here -->
-      <button class="btn btn-primary js-create-table-btn">Create MODM Table</button>
 
-      <!-- Add this button where you want it in your HTML -->
-    <button class="btn btn-secondary reset-btn js-reset-btn">Clear Data</button>
+      <p class="js-no-results">No Results</p>
 
-
-      <div class="ranking-table-wrapper js-ranking-table">
+      <div class="ranking-table-wrapper js-ranking-table hidden">
         <h2>Ranking Table (Best to Worst case scenario)</h2>
         <table class="scenarios-table">
           <thead></thead>
@@ -90,11 +97,14 @@
         <h2>Results Insights</h2>
 
         <div class="weight-distribution js-wight-distribution">
-          <label class="category-weight-label">Category Weight distribution</label>
-
+          <label class="category-weight-label"
+            >Category Weight distribution</label
+          >
         </div>
         <div class="performance-score js-performance-score">
-          <label class="performance-score-label">Scenario Performance Score</label>
+          <label class="performance-score-label"
+            >Scenario Performance Score</label
+          >
         </div>
 
         <div class="best-case-scenario js-best-case-scenario">
@@ -106,9 +116,7 @@
           <label class="worst-case-scenario-label">Worst Case Scenario</label>
           <pre></pre>
         </div>
-
       </div>
-
     </div>
 
     <div class="modal js-add-scenario-modal">
@@ -119,7 +127,9 @@
             <label for="scenarioName" class="js-label">Scenario Name</label>
             <input type="text" id="scenarioName" class="js-input" required />
           </div>
-          <div class="add-scenario-form-container js-add-scenario-form-container"></div>
+          <div
+            class="add-scenario-form-container js-add-scenario-form-container"
+          ></div>
 
           <button
             type="submit"
@@ -127,17 +137,29 @@
           >
             Submit
           </button>
+          <button
+            type="submit"
+            class="btn btn-primary js-update-scenario-btn hidden"
+          >
+            Update
+          </button>
         </form>
       </div>
     </div>
 
-    <div class="modal js-modal" id="myModal">
+    <div class="modal js-modal-add-category" id="myModal">
       <div class="modal-content category-creation-model js-modal-content">
         <span class="close js-close">&times;</span>
         <form class="category-creation-form js-category-creation-form">
           <div class="form-element">
             <label for="categoryName" class="js-label">Category Name:</label>
-            <input type="text" id="categoryName" class="js-input" required />
+            <input
+              type="text"
+              id="categoryName"
+              class="js-input"
+              required
+              name="categoryName"
+            />
           </div>
 
           <div class="form-element">
@@ -147,6 +169,7 @@
             <input
               type="number"
               id="categoryWeight"
+              name="categoryWeight"
               class="js-input"
               step="any"
               min="0"
@@ -158,7 +181,12 @@
             <label for="categoryDirection" class="js-label"
               >Category Direction:</label
             >
-            <select id="categoryDirection" class="js-select" required>
+            <select
+              id="categoryDirection"
+              class="js-select"
+              name="categoryDirection"
+              required
+            >
               <option value="positive">Positive</option>
               <option value="negative">Negative</option>
             </select>
@@ -167,7 +195,12 @@
             <label for="evaluationType" class="js-label"
               >Category Evaluation Type:</label
             >
-            <select id="evaluationType" class="js-select" required>
+            <select
+              id="evaluationType"
+              class="js-select"
+              name="evaluationType"
+              required
+            >
               <option value="numerical">Numerical</option>
               <!-- <option value="linear">Linear</option> -->
               <option value="descriptive">Descriptive</option>
@@ -176,11 +209,13 @@
           <button type="submit" class="btn btn-primary js-submit-btn">
             Submit
           </button>
+          <button type="submit" class="btn btn-primary js-update-btn hidden">
+            Update
+          </button>
         </form>
       </div>
     </div>
-
+    <script src="../js/fileupload.js" type="module"></script>
     <script src="../js/dashboard.js" type="module"></script>
-    <script src="../js/fileupload.js"></script>
   </body>
 </html>
