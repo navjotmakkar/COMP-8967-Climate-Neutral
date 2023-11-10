@@ -77,6 +77,10 @@ function updateAllCategories() {
   let categories = JSON.parse(localStorage.getItem("categories")) || []; // Parse categories from localStorage
 
   const allCategoriesContainer = document.querySelector(".js-all-categories");
+
+  // Clear the content of .js-all-categories
+  allCategoriesContainer.innerHTML = "";
+  
   const noCategories =
     allCategoriesContainer.querySelector(".js-no-categories");
   if (categories.length) {
@@ -236,6 +240,18 @@ function isCategoryWeightWithinLimit() {
 const createTableBtn = document.querySelector(".js-create-table-btn");
 createTableBtn.addEventListener("click", () => {
   calculateMODMA();
+});
+
+document.querySelector(".js-reset-btn").addEventListener("click", () => {
+  // Clear categories and scenarios from localStorage
+  localStorage.removeItem("categories");
+  localStorage.removeItem("scenarios");
+  localStorage.removeItem("rankingTable");
+
+  // Update the web page to reflect the changes
+  updateAllCategories();
+  populateTable();
+  populateResults();
 });
 
 function populateTable() {
