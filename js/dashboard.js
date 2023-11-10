@@ -119,12 +119,12 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-hardReset.addEventListener("click", () => {
-  localStorage.setItem("categories", JSON.stringify(categories));
-  localStorage.setItem("scenarios", JSON.stringify(scenarios));
-  updateAllScenarios();
-  populateTable();
-});
+// hardReset.addEventListener("click", () => {
+//   localStorage.setItem("categories", JSON.stringify(categories));
+//   localStorage.setItem("scenarios", JSON.stringify(scenarios));
+//   updateAllScenarios();
+//   populateTable();
+// });
 
 // normalization
 
