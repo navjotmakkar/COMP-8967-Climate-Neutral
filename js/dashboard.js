@@ -718,7 +718,25 @@ function clearAllData() {
   // Clear ranking table
   localStorage.removeItem("rankingTable");
 
-  // Clear both charts (replace these lines with your actual chart clearing logic)
+  // Clear result insights section
+  const noResultsAvailable = document.querySelector(".js-no-results");
+  const rankingTable = document.querySelector(".js-ranking-table");
+  noResultsAvailable.classList.remove("hidden");
+  rankingTable.classList.add("hidden");
+
+  // Hide best and worst case scenario sections
+  const resultsInsights = document.querySelector(".js-results-insights");
+  resultsInsights.classList.add("hidden");
+
+  // Clear and hide best case scenario
+  const bestCaseScenario = document.querySelector(".js-best-case-scenario > pre");
+  bestCaseScenario.textContent = "";
+
+  // Clear and hide worst case scenario
+  const worstCaseScenario = document.querySelector(".js-worst-case-scenario > pre");
+  worstCaseScenario.textContent = "";
+
+  // Clear weight distribution and performance score charts (replace these lines with your actual chart clearing logic)
   const piChart = document.querySelector(".js-wight-distribution");
   const barChart = document.querySelector(".js-performance-score");
   piChart.innerHTML = "";
