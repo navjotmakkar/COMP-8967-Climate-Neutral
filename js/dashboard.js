@@ -581,7 +581,7 @@ function calculateMODMA() {
       alert(categoryValidationResult.message);
     } else if (!scenarioValidationResult.isValid) {
       alert(scenarioValidationResult.message);
-    } else {
+    } else if(!weightValidationResult.isValid){
       alert(weightValidationResult.message);
     }
     return;
@@ -790,7 +790,7 @@ function validateScenarios(scenarios) {
 
 function validateWeights(categories) {
   // Check if the sum of weights is equal to 1
-  const sumOfWeights = categories.reduce((sum, category) => sum + category.categoryWeight, 0);
+  const sumOfWeights = categories.reduce((sum, category) => sum + parseFloat(category.categoryWeight), 0);
   if (sumOfWeights !== 1) {
     return {
       isValid: false,
