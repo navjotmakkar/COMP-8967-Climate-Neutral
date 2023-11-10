@@ -130,14 +130,24 @@ addScenario.addEventListener("click", () => {
       selectField.required = true;
       // Options for descriptive input
       const highOption = document.createElement("option");
-      highOption.value = "3";
+      highOption.value = "5";
       highOption.textContent = "High";
       selectField.appendChild(highOption);
 
+      const mediumHighOption = document.createElement("option");
+      mediumHighOption.value = "4";
+      mediumHighOption.textContent = "Medium-High";
+      selectField.appendChild(mediumHighOption);
+
       const mediumOption = document.createElement("option");
-      mediumOption.value = "2";
+      mediumOption.value = "3";
       mediumOption.textContent = "Medium";
       selectField.appendChild(mediumOption);
+
+      const lowMediumOption = document.createElement("option");
+      lowMediumOption.value = "2";
+      lowMediumOption.textContent = "Low-Medium";
+      selectField.appendChild(lowMediumOption);
 
       const lowOption = document.createElement("option");
       lowOption.value = "1";
