@@ -27,7 +27,8 @@
   box-sizing: border-box;
 }
 body {
-  font-family: Arial, sans-serif;
+  font-family: 'Montserrat', sans-serif;
+  font-style: italic;
   margin: 0;
   padding: 0;
 }
