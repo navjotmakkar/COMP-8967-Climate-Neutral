@@ -274,6 +274,17 @@ function openAddScenarioModel(scenario, index) {
 
     jsAddScenarioFormContainer.insertAdjacentHTML("beforeend", categoryElement);
   });
+
+  // Get the Scenario Name input element
+  const scenarioNameInput = document.querySelector("#scenarioName");
+
+  // Enable or disable the Scenario Name input based on whether it's an edit or add
+  if (scenario) {
+    scenarioNameInput.setAttribute("disabled", true);
+  } else {
+    scenarioNameInput.removeAttribute("disabled");
+  }
+
   if (scenario) {
     const categoryNameInput = document.querySelector(
       "form.js-add-scenario-form #scenarioName"
@@ -649,6 +660,15 @@ function downloadCSV() {
   const categories = JSON.parse(localStorage.getItem("categories")) || [];
   const scenarios = JSON.parse(localStorage.getItem("scenarios")) || [];
 
+  const fileNameInput = document.getElementById("fileNameInput");
+  const fileName = fileNameInput.value.trim();
+
+  // Ensure the user provided a file name
+  if (fileName === "") {
+    alert("Please enter a valid file name.");
+    return;
+  }
+
   // Function to convert an object to CSV row
   function convertToCSVRow(obj) {
     const values = Object.values(obj);
@@ -711,7 +731,7 @@ function downloadCSV() {
   const link = document.createElement("a");
   const url = URL.createObjectURL(blob);
   link.setAttribute("href", url);
-  link.setAttribute("download", "data.csv");
+  link.setAttribute("download", `${fileName}.csv`);
   link.style.display = "none";
   document.body.appendChild(link);
   link.click();
@@ -790,7 +810,7 @@ function validateScenarios(scenarios) {
 
 function validateWeights(categories) {
   // Check if the sum of weights is equal to 1
-  const sumOfWeights = categories.reduce((sum, category) => sum + category.categoryWeight, 0);
+  const sumOfWeights = categories.reduce((sum, category) => sum + parseFloat(category.categoryWeight), 0);
   if (sumOfWeights !== 1) {
     return {
       isValid: false,

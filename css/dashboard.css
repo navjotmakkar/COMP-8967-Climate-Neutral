@@ -19,6 +19,25 @@ header {
     height: 100%;
   }
 
+/* Add this CSS code to your stylesheet or style tag */
+.txt-download {
+  display: flex;
+  align-items: center;
+}
+
+#fileNameInput {
+  border: none;
+  outline: none;
+  padding: 5px;
+  margin-right: 10px;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+
+#downloadCSV {
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+}
   
   h1 {
     font-size: 24px;

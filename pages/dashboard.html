@@ -62,9 +62,14 @@
       <div class="scenarios-table-wrapper js-scenarios-table">
         <div class="scenarios-header-wrapper">
           <h2>Scenario Table</h2>
-          <button id="downloadCSV" class="btn btn-secondary">
-            <i class="fa-solid fa-download"></i>
-          </button>
+          <!-- Add this container in your HTML -->
+          <div class="txt-download">
+            <input type="text" id="fileNameInput" placeholder="Enter file name">
+            <button id="downloadCSV" class="btn btn-secondary">
+              <i class="fa-solid fa-download"></i>
+            </button>
+          </div>
+
         </div>
         <p class="js-no-Scenarios">No Scenarios available</p>
 
@@ -129,7 +134,7 @@
         <form class="category-creation-form js-add-scenario-form">
           <div class="form-element">
             <label for="scenarioName" class="js-label">Scenario Name</label>
-            <input type="text" id="scenarioName" class="js-input" required />
+            <input type="text" id="scenarioName" class="js-input" required name="scenarioName" />
           </div>
           <div
             class="add-scenario-form-container js-add-scenario-form-container"
