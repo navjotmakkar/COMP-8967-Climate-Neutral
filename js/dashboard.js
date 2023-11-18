@@ -78,6 +78,7 @@ function populateCategoryForm(index) {
 }
 
 function deleteCategory(index) {
+  allCategories = JSON.parse(localStorage.getItem("categories")) || [];
   allCategories.splice(index, 1);
   localStorage.setItem("categories", JSON.stringify(allCategories));
   updateAllScenarios();

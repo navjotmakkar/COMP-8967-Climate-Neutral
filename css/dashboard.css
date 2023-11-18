@@ -1,25 +1,23 @@
 header {
-    background-color: #e2e2e2;
-    color: white;
-    /* padding: 10px 0; */
-    border-bottom: 1px solid black;
-  }
+  background-color: #e2e2e2;
+  color: white;
+  border-bottom: 1px solid black;
+}
 
-  .navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 5px 10px 10px 20px;
-    position: relative;
-  }
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 10px 10px 20px;
+  position: relative;
+}
 
-  .navbar .brand {
-    float: left;
-    padding-top: 10px;
-    height: 100%;
-  }
+.navbar .brand {
+  float: left;
+  padding-top: 10px;
+  height: 100%;
+}
 
-/* Add this CSS code to your stylesheet or style tag */
 .txt-download {
   display: flex;
   align-items: center;
@@ -38,43 +36,39 @@ header {
   border-top-left-radius: 10px;
   border-bottom-left-radius: 10px;
 }
-  
-  h1 {
-    font-size: 24px;
-    font-weight: bold;
-    color: black;
-  }
 
-  .user-info {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    color: black;
-  }
+h1 {
+  font-size: 24px;
+  font-weight: bold;
+  color: black;
+}
 
-  .content {
-    padding: 20px;
-  }
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: black;
+}
 
-  .content-box {
-    /* background: linear-gradient(to right, #686868, #ffffff); */
-    /* border: 1px solid #ccc; */
-    border-radius: 5px;
-    /* box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1); */
-    width: 100%; 
-    /* height: 80vh; */
-    text-align: center;
-    padding-top: 20px;
-    /* font-family: cursive; */
-    font-size: 25px;
+.content {
+  padding: 20px;
+}
+
+.content-box {
+  border-radius: 5px;
+  width: 100%;
+
+  text-align: center;
+  padding-top: 20px;
+
+  font-size: 25px;
 }
 
 .content-box p {
   font-size: 20px;
 }
 
-
-.file-upload{
+.file-upload {
   display: flex;
   gap: 10px;
   width: 100%;
@@ -100,7 +94,7 @@ header {
   width: 50%;
 }
 
-.all-categories{
+.all-categories {
   margin: 10px 0;
   flex-wrap: wrap;
 }
@@ -132,21 +126,17 @@ header {
   align-items: center;
 }
 
-/* .category-tab label {
-  margin-right: 10px;
-} */
-
 .modal-content .form-element {
   display: flex;
   align-items: center;
 }
 .form-element label,
-.form-element i{
+.form-element i {
   display: block;
   width: 30%;
 }
 .form-element input,
-.form-element select{
+.form-element select {
   flex: 1;
   padding: 5px;
 }
@@ -167,7 +157,9 @@ header {
   margin-top: 10px;
 }
 
-table, td, th {
+table,
+td,
+th {
   border: 1px solid black;
 }
 
@@ -178,7 +170,8 @@ table {
   margin-bottom: 10px;
 }
 
-th, td {
+th,
+td {
   padding: 10px;
 }
 
@@ -197,9 +190,9 @@ th, td {
 
 .scenario-name-table-cell {
   display: flex;
-  align-items: center ;
-  gap :2px;
-  border: 0.1px solid black
+  align-items: center;
+  gap: 2px;
+  border: 0.1px solid black;
 }
 .scenario-name-table-cell > span {
   width: 80%;
@@ -249,7 +242,6 @@ th, td {
   display: flex;
   flex-direction: column;
   gap: 8px;
-
 }
 
 .best-case-scenario-label,
@@ -287,15 +279,15 @@ th, td {
   align-items: center;
   justify-content: space-between;
 }
-.scenarios-header-wrapper button{ 
+.scenarios-header-wrapper button {
   padding: 10px 30px;
 }
 
 .js-clear-data-btn {
   display: inline-block;
   padding: 10px 20px;
-  margin-top: 10px; /* Add margin to the top */
-  margin-bottom: 10px; /* Add margin to the bottom */
+  margin-top: 10px; 
+  margin-bottom: 10px;
   font-size: 16px;
   background-color: #dc3545;
   color: #fff;
@@ -309,8 +301,8 @@ th, td {
 .js-analyze-data-btn {
   display: inline-block;
   padding: 10px 20px;
-  margin-top: 10px; /* Add margin to the top */
-  margin-bottom: 10px; /* Add margin to the bottom */
+  margin-top: 10px;
+  margin-bottom: 10px; 
   font-size: 16px;
   background-color: #1fd00b;
   color: #fff;
