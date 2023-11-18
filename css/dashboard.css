@@ -318,5 +318,9 @@ th, td {
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+#fileInput {
+  display: none;
   background-color: #1fd00b;
 }

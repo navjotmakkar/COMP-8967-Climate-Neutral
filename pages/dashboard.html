@@ -48,8 +48,12 @@
         </div>
       </div>
       <div class="file-upload">
-        <input type="file" id="csvFile" accept=".csv" />
-        <button class="btn btn-primary" id="convertButton">Upload</button>
+        <!-- <input type="file" id="csvFile" accept=".csv" />
+        <button class="btn btn-primary" id="convertButton">Upload</button> -->
+          
+        <button id="uploadBtn" >Upload</button>
+        <input type="file" id="fileInput" accept=".csv" >
+
       </div>
 
       <button class="btn btn-secondary modal-btn js-modal-btn">
@@ -93,7 +97,7 @@
       <p class="js-no-results">No Results</p>
 
       <div class="ranking-table-wrapper js-ranking-table hidden">
-        <h2>Ranking Table (Best to Worst case scenario)</h2>
+        <h2>Ranking Table (Best to Worst Deal Scenario)</h2>
         <table class="scenarios-table">
           <thead></thead>
           <tbody class="js-table-body">
@@ -117,7 +121,7 @@
         </div>
 
         <div class="best-case-scenario js-best-case-scenario">
-          <label class="best-case-scenario-label">Best Case Scenario</label>
+          <label class="best-case-scenario-label">Best Deal Recommended</label>
           <pre></pre>
         </div>
 

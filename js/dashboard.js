@@ -41,11 +41,12 @@ const clearDataButton = document.querySelector(".js-clear-data-btn");
 const analyzeDataBtn = document.querySelector(".js-analyze-data-btn");
 
 // Call uploadCSV function when the file input value changes
-uploadButton.addEventListener("click", function () {
-  fileInput.value = "";
-  updateAllScenarios();
-  populateTable();
-});
+// uploadButton.addEventListener("click", function (e) {
+//   uploadCSV(e, cb)
+//   fileInput.value = "";
+//   updateAllScenarios();
+//   populateTable();
+// });
 let allCategories, allScenarios;
 
 const scale = [
@@ -59,9 +60,11 @@ const scale = [
 function cb(categories, scenarios) {
   localStorage.setItem("categories", JSON.stringify(categories));
   localStorage.setItem("scenarios", JSON.stringify(scenarios));
+  updateAllScenarios();
+  populateTable();
 }
 
-fileInput.addEventListener("change", (e) => uploadCSV(e, cb));
+// fileInput.addEventListener("change", (e) => uploadCSV(e, cb));
 
 function populateCategoryForm(index) {
   allCategories = JSON.parse(localStorage.getItem("categories")) || [];
@@ -825,3 +828,23 @@ downloadButton.addEventListener("click", downloadCSV);
 
 updateAllScenarios();
 populateTable();
+
+const uploadBtn = document.getElementById("uploadBtn");
+const fileInputTT = document.getElementById("fileInput");
+
+uploadBtn.addEventListener("click", () => triggerFileInput());
+fileInputTT.addEventListener("change", (e) => handleFileSelect(e));
+function triggerFileInput() {
+  document.getElementById("fileInput").click();
+}
+
+function handleFileSelect(event) {
+  const fileInput = event.target;
+  const files = fileInput.files;
+
+  if (files.length > 0) {
+    const selectedFile = files[0];
+    console.log("Selected file:", selectedFile);
+    uploadCSV(event, cb);
+  }
+}
