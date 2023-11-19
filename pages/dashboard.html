@@ -21,10 +21,10 @@
       <button id="user-logout" class="btn btn-secondary">Logout</button>
     </div>
   </header>
-<div class="importexport">
-  <h2 class="import">Import</h2>
-  <h2 class="export">Export</h2>
-</div>
+  <div class="importexport">
+    <h2 class="import">Import File</h2>
+    <h2 class="export">Export File</h2>
+  </div>
   <div class="udcontainer">
     <!-- <button class="js-hard-reset"> Reset </button> -->
 
@@ -44,40 +44,47 @@
       </button>
     </div>
   </div>
-
   <hr class="hr-1">
-  <button class="btn btn-secondary modal-btn js-modal-btn">
-    Add Category
-  </button>
 
-  <p class="js-no-categories">No Categories available. Add categories or upload a file.</p>
-  <div class="all-categories js-all-categories hidden"></div>
-
-  <div class="scenarios-table-wrapper js-scenarios-table">
-    <div class="scenarios-header-wrapper">
-      <h2>Scenario Table</h2>
-      <!-- Add this container in your HTML -->
-
-
+  <div class="cscontainer">
+    <div class="half">
+      <button class="btn btn-secondary modal-btn js-modal-btn">
+        Add Category
+      </button>
+      <h2>Categories</h2>
+      <p class="js-no-categories">No Categories available. Add categories or upload a file.</p>
+      <div class="all-categories js-all-categories hidden"></div>
     </div>
-    <p class="js-no-Scenarios">No Scenarios available</p>
 
-    <table class="scenarios-table hidden">
-      <thead></thead>
-      <tbody class="js-table-body">
-        <!-- Table body will be populated dynamically using JavaScript -->
-      </tbody>
-    </table>
-    <button class="btn btn-secondary modal-btn js-modal-add-scenario-btn">
-      Add Scenario
-    </button>
+    <div class="half">
+      <button class="btn btn-secondary modal-btn js-modal-add-scenario-btn">
+        Add Scenario
+      </button>
+      <div class="scenarios-table-wrapper js-scenarios-table">
+        <div class="scenarios-header-wrapper">
+          <!-- Add this container in your HTML -->
+        </div>
+
+        <h2>Scenarios</h2>
+        <p class="js-no-Scenarios">No Scenarios available</p>
+
+        <table class="scenarios-table hidden">
+          <thead></thead>
+          <tbody class="js-table-body">
+            <!-- Table body will be populated dynamically using JavaScript -->
+          </tbody>
+        </table>
+
+      </div>
+    </div>
   </div>
-
-  <!-- Add Reset Button -->
-  <div>
+  <hr class="hr-1">
+  <div class="button-container">
     <button class="js-analyze-data-btn">Analyze Data</button>
     <button class="js-clear-data-btn">Clear Data</button>
   </div>
+
+  <!-- Add Reset Button -->
 
   <p class="js-no-results">No Results</p>
 

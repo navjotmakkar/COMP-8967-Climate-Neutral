@@ -89,14 +89,6 @@ header {
   background-color: rgba(0,0,0,0.7);
 }
 
-.all-categories{
-  display: flex;
-  gap: 5px;
-  padding: 10px;
-  border: 1px solid black;
-  border-radius: 5px;
-}
-
 .modal-content {
   position: relative;
   background-color: #fefefe;
