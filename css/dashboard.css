@@ -1,27 +1,37 @@
-header {
-  background-color: #e2e2e2;
-  color: white;
-  border-bottom: 1px solid black;
+.txt-download {
+  display: inline;
+  align-items: center;
+  border-style: dashed;
+  text-align: center;
+  background: #f5f5f5;
+  border-style: dashed;
+  padding: 14px;
+  width: 450px;
+  position: relative;
+  border-radius: 3px;
+  margin-right: auto;
+  margin-left: auto;
 }
 
-.navbar {
+.udcontainer {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 5px 10px 10px 20px;
-  position: relative;
+  padding: 10px;
 }
 
-.navbar .brand {
-  float: left;
-  padding-top: 10px;
-  height: 100%;
-}
-
-.txt-download {
+.importexport{
   display: flex;
-  align-items: center;
 }
+
+.importexport h2{
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.file-upload,.txt-download {
+      flex: 1;
+    }
 
 #fileNameInput {
   border: none;
@@ -35,6 +45,15 @@ header {
 #downloadCSV {
   border-top-left-radius: 10px;
   border-bottom-left-radius: 10px;
+}
+
+.container {
+  width: 100%;
+  max-width: 1500px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  padding: 70px 0;
 }
 
 h1 {
@@ -69,25 +88,63 @@ h1 {
 }
 
 .file-upload {
-  display: flex;
-  gap: 10px;
+  display: inline;
+  text-align: center;
+  background: #f5f5f5;
+  border-style: dashed;
+  padding: 16px;
+  width: 450px;
+  position: relative;
+  border-radius: 3px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.file-upload > [type='file'] {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
-  height: 50px;
-  margin: 10px 0;
-  align-items: center;
-  justify-content: space-between;
-  align-content: center;
+  height: 100%;
+  opacity: 0;
+  z-index: 10;
+  cursor: pointer;
 }
 
-.file-upload input {
-  margin: 0;
-  flex: 3;
-  height: 100%;
+.file-upload > .button {
+  display: inline-block;
+  cursor: pointer;
+  background: #eee;
+  padding: 8px 16px;
+  border-radius: 2px;
+  margin-right: 8px;
 }
 
-.file-upload button {
-  flex: 1;
-  height: 100%;
+.file-upload:hover > .button {
+  background: #151284;
+  color: white;
+}
+
+.file-upload > .label {
+  color: #000000;
+  white-space: nowrap;
+  opacity: .3;
+}
+
+.file-upload.-chosen > .label {
+  opacity: 1;
+}
+
+hr {
+  background-color: #fff;
+  padding: 0;
+  margin: 50px;
+}
+
+hr.hr-1 {
+  border: 0;
+  height: 1px;
+  background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
 }
 
 .category-creation-model {
@@ -265,7 +322,7 @@ td {
   display: flex;
   width: 100%;
   height: 80px;
-  background: #e2e2e2;
+  background: #f5f5f5;
   font-size: 23px;
   font-weight: 800;
   align-items: center;
