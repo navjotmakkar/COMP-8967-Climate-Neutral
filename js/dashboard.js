@@ -397,6 +397,8 @@ categoryForm.addEventListener("submit", (e) => {
 
 function populateTable() {
   const tableBody = document.querySelector(".js-table-body");
+  const tableHeader = document.querySelector("table.scenarios-table > thead");
+  tableHeader.innerHTML = "";
   tableBody.innerHTML = "";
   // Retrieve categories and scenarios from localStorage
   const categories = JSON.parse(localStorage.getItem("categories")) || [];
@@ -407,14 +409,14 @@ function populateTable() {
     const scenariosTable = document.querySelector(".scenarios-table");
     noScenariosAvailable.classList.add("hidden");
     scenariosTable.classList.remove("hidden");
-  }
+  
   // Create the header row with scenario names as columns
   const headerRow = document.createElement("tr");
   headerRow.innerHTML = "<th>Scenarios</th>";
   categories.forEach((category) => {
     headerRow.innerHTML += `<th>${category.categoryName}</th>`;
   });
-  tableBody.appendChild(headerRow);
+  tableHeader.appendChild(headerRow);
 
   // Iterate through categories and populate the table dynamically
   scenarios.forEach((scenario, i) => {
@@ -433,6 +435,7 @@ function populateTable() {
 
     tableBody.appendChild(row);
   });
+}
 }
 
 function plotGraph(categories, results) {
@@ -478,8 +481,10 @@ analyzeDataBtn.addEventListener("click", () => {
 
 function populateResults() {
   const rankingTable = document.querySelector(".js-ranking-table");
+  const tableHeader = rankingTable.querySelector("thead");
   const tableBody = rankingTable.querySelector(".js-table-body");
   tableBody.innerHTML = "";
+  tableHeader.innerHTML = ""
 
   // Retrieve categories and scenarios from localStorage
   const categories = JSON.parse(localStorage.getItem("categories")) || [];
@@ -510,7 +515,7 @@ function populateResults() {
   categories.forEach((category) => {
     headerRow.innerHTML += `<th>${category.categoryName}</th>`;
   });
-  tableBody.appendChild(headerRow);
+  tableHeader.appendChild(headerRow);
 
   // Iterate through categories and populate the table dynamically
   results.forEach((scenario) => {
