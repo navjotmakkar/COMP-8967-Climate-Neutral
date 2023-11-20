@@ -303,7 +303,6 @@ th, td {
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s ease, box-shadow 0.3s ease;
-  background-color: #dc3545;
 }
 
 .js-analyze-data-btn {
@@ -318,5 +317,4 @@ th, td {
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s ease, box-shadow 0.3s ease;
-  background-color: #1fd00b;
 }
