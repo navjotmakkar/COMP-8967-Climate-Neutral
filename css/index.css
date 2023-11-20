@@ -5,7 +5,8 @@ body {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: linear-gradient(135deg, #9b59b6, #e74c3c); /* Gradient background with purple and red */
+  background: rgb(250,255,252);
+  background: linear-gradient(90deg, rgba(250,255,252,1) 43%, rgba(247,249,255,1) 63%);
 }
 
 .container {
@@ -14,17 +15,20 @@ body {
   gap: 10px;
   width: 30%;
   padding: 60px;
-  border: 2px solid #fff; /* White border */
+  border: 2px solid #ccc;
   border-radius: 5px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   text-align: center;
   margin-top: 20px;
-  background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent white background */
+  transition: transform 0.3s ease-in-out; /* Add a smooth transition effect */
 }
 
+.container:hover {
+  transform: scale(1.05); /* Enlarge the container on hover */
+}
 h1 {
-  margin-bottom: 20px;
-  color: #000; /* White text color */
+  margin-bottom: 40px;
+  color: #000000;
 }
 
 #login_form {
@@ -35,42 +39,53 @@ h1 {
 #login_form > input {
   padding: 10px;
   margin-bottom: 15px;
-  border: 1px solid #fff; /* White border */
+  border: 1px solid #fff; 
   border-radius: 3px;
-  font-size: 16px; /* Adjusted font size */
-  background-color: rgba(255, 255, 255, 0.5); /* Semi-transparent white background */
-  color: #333; /* Text color */
+  font-size: var(--medium-font-size);
+  transition: border-color 0.3s ease-in-out;
 }
 
-.button-primary {
-  background-color: #3498db; /* Blue color for the button */
-  color: #fff; /* White text color */
+#login_form > input:focus {
+  border-color: var(--primary-color); /* Change border color on input focus */
+}
+
+#login_form > button:hover {
+  border-color: var(--primary-color); /* Change border color on input focus */
+}
+
+#login_form > input:hover {
+  border-color: var(--accent-color); /* Change border color on hover */
+}
+
+.btn-primary {
   border: none;
   padding: 10px;
   border-radius: 3px;
+  background-color: var(--primary-color);
+  background-color: darkturquoise;
+  color: #000;
   cursor: pointer;
-  font-size: 16px;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease-in-out;
+  font-size: var(--medium-font-size);
 }
 
-.button-primary:hover {
-  background-color: #2980b9; /* Darker blue on hover */
+.btn-primary:hover {
+  background-color: var(--accent-color); /* Change background color on hover */
+  border-color: black;
 }
+
+.logo {
+  width: 300px; /* Adjust the width as needed */
+  margin-right: 20px; /* Add some spacing between the image and the container */
+}
+
+
 
 .link {
-  color: #fff; /* White text color for links */
+  color: #000000; /* White text color for links */
   text-decoration: none;
 }
 
 .link:hover {
   text-decoration: underline; /* Underline on hover for links */
-}
-
-.error-msg {
-  display: none;
-  margin: 10px 0;
-  padding: 10px;
-  border-radius: 3px 3px 3px 3px;
-  color: #D8000C;
-  background-color: #FFBABA;
 }
