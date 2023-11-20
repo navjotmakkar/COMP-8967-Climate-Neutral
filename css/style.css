@@ -32,8 +32,8 @@
 
 body {
   font-family: Arial, sans-serif;
-  background: rgb(242,255,245);
-  background: linear-gradient(90deg, rgba(242,255,245,1) 35%, rgba(238,252,255,1) 100%);
+  background: rgb(245,255,249);
+  background: linear-gradient(90deg, rgba(245,255,249,1) 43%, rgba(234,241,255,1) 63%);
   color: #333;
   margin-left: 50px;
   margin-right: 50px;
