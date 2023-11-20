@@ -5,6 +5,8 @@ body {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
+  background: rgb(250,255,252);
+  background: linear-gradient(90deg, rgba(250,255,252,1) 43%, rgba(247,249,255,1) 63%);
 }
 
 .container {
@@ -37,22 +39,39 @@ h1 {
 #login_form > input {
   padding: 10px;
   margin-bottom: 15px;
-  border: 1px solid #fff; /* White border */
+  border: 1px solid #fff; 
   border-radius: 3px;
-  font-size: 16px; /* Adjusted font size */
-  background-color: rgba(255, 255, 255, 0.5); /* Semi-transparent white background */
-  color: #333; /* Text color */
+  font-size: var(--medium-font-size);
+  transition: border-color 0.3s ease-in-out;
+}
+
+#login_form > input:focus {
+  border-color: var(--primary-color); /* Change border color on input focus */
+}
+
+#login_form > button:hover {
+  border-color: var(--primary-color); /* Change border color on input focus */
+}
+
+#login_form > input:hover {
+  border-color: var(--accent-color); /* Change border color on hover */
 }
 
 .btn-primary {
-  background-color: #e74c3c; /* Red color for the button */
-  color: #fff; /* White text color */
   border: none;
   padding: 10px;
   border-radius: 3px;
+  background-color: var(--primary-color);
+  background-color: darkturquoise;
+  color: #000;
   cursor: pointer;
-  font-size: 16px;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease-in-out;
+  font-size: var(--medium-font-size);
+}
+
+.btn-primary:hover {
+  background-color: var(--accent-color); /* Change background color on hover */
+  border-color: black;
 }
 
 .logo {
@@ -60,12 +79,10 @@ h1 {
   margin-right: 20px; /* Add some spacing between the image and the container */
 }
 
-.btn-primary:hover {
-  background-color: #c0392b; /* Darker red on hover */
-}
+
 
 .link {
-  color: #fff; /* White text color for links */
+  color: #000000; /* White text color for links */
   text-decoration: none;
 }
 
