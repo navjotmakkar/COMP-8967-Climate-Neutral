@@ -59,7 +59,7 @@ header {
 }
 
 .container>h1 {
-    font-weight: 600;
+    font-weight: 800;
     font-size: 48px;
     line-height: 120%;
     text-align: center;
@@ -68,7 +68,7 @@ header {
 
 .container>p {
     padding: 20px 0;
-    font-weight: 600;
+    font-weight: 530;
     font-size: 20px; 
     line-height: 2;
     text-align: center;
@@ -145,4 +145,11 @@ header {
 .user-info #user-logout:hover {
     background: #0D0D5A;
 }
+
+.animate__animated{
+    color:black;
+    animation: fadeIn;
+    /* --animate-duration: 1.5s; */
+}
+
 

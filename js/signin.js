@@ -17,7 +17,8 @@ const signInUser = (event) => {
         loginForm.reset()
     })
     .catch((error) => {
-      alert(error.message)
+      // alert(error.message)
+      document.getElementById('errorMsg').style.display = 'block';
       loginForm.reset()
     });
 };

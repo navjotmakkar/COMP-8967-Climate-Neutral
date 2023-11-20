@@ -65,3 +65,12 @@ h1 {
 .link:hover {
   text-decoration: underline; /* Underline on hover for links */
 }
+
+.error-msg {
+  display: none;
+  margin: 10px 0;
+  padding: 10px;
+  border-radius: 3px 3px 3px 3px;
+  color: #D8000C;
+  background-color: #FFBABA;
+}
