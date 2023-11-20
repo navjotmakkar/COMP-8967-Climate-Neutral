@@ -530,17 +530,22 @@ function populateResults() {
 
     tableBody.appendChild(row);
   });
-  if (results.length >= 2) {
-    resultsInsights.classList.remove("hidden");
-    bestCaseScenario.textContent = JSON.stringify(results[0], undefined, 2);
-    worstCaseScenario.textContent = JSON.stringify(
-      results[results.length - 1],
-      undefined,
-      2
-    );
-  }
-
-  plotGraph(categories, results);
+   // Find the best and worst scenarios based on performance scores
+   const bestScenario = results[0];
+   const worstScenario = results[results.length - 1];
+ 
+   // Construct sentences for best and worst case scenarios
+   const bestCaseSentence = `${bestScenario.scenarioName} with a performance score of ${bestScenario.performanceScore.toFixed(2)}.`;
+   const worstCaseSentence = `${worstScenario.scenarioName} with a performance score of ${worstScenario.performanceScore.toFixed(2)}.`;
+ 
+   // Display sentences in the UI
+   bestCaseScenario.textContent = bestCaseSentence;
+   worstCaseScenario.textContent = worstCaseSentence;
+ 
+   if (results.length >= 2) {
+     resultsInsights.classList.remove("hidden");
+     plotGraph(categories, results);
+   }
 }
 
 addScenarioForm.addEventListener("submit", (e) => {
