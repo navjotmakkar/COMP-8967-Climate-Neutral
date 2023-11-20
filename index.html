@@ -3,17 +3,15 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="./css/index.css" />
-    <link rel="stylesheet" href="./css/style.css" />
+    <link rel="stylesheet" href="../css/index.css" />
+    <!-- <link rel="stylesheet" href="../css/style.css" /> -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <script src="https://kit.fontawesome.com/b28bb7b0be.js" crossorigin="anonymous"></script>
     <title>Sign In</title>
   </head>
   <body>
-    <h1>Multi-Objective Decision Making Application</h1>
-    <div class="error-msg" id="errorMsg">
-      <i class="fa fa-times-circle"></i>
-      Wrong Credentials! Try Again.
-    </div>
+    <h1 class="animate__animated animate__bounce">Multi-Objective Decision Making Application</h1>
+    <img src="..\assets\logo.png" alt="Logo" class="logo" />
     <div class="container">
       <h1 class="heading">Sign In</h1>
       <form id="login_form">
@@ -21,7 +19,7 @@
         <input id="password" type="password" placeholder="Password" required />
         <button type="submit" class="btn btn-primary" value="Sign In" >Log In</button>
       </form>
-      <a class="link" href="forget-password.html">Forgot Password?</a
+      <a class="link" href="./pages/forget-password.html">Forgot Password?</a
       >
       <a class="link" href="./pages/signup.html">Create New Account</a>
     </div>

@@ -5,7 +5,6 @@ body {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: linear-gradient(135deg, #9b59b6, #e74c3c); /* Gradient background with purple and red */
 }
 
 .container {
@@ -14,17 +13,20 @@ body {
   gap: 10px;
   width: 30%;
   padding: 60px;
-  border: 2px solid #fff; /* White border */
+  border: 2px solid #ccc;
   border-radius: 5px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   text-align: center;
   margin-top: 20px;
-  background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent white background */
+  transition: transform 0.3s ease-in-out; /* Add a smooth transition effect */
 }
 
+.container:hover {
+  transform: scale(1.05); /* Enlarge the container on hover */
+}
 h1 {
-  margin-bottom: 20px;
-  color: #000; /* White text color */
+  margin-bottom: 40px;
+  color: #000000;
 }
 
 #login_form {
@@ -42,8 +44,8 @@ h1 {
   color: #333; /* Text color */
 }
 
-.button-primary {
-  background-color: #3498db; /* Blue color for the button */
+.btn-primary {
+  background-color: #e74c3c; /* Red color for the button */
   color: #fff; /* White text color */
   border: none;
   padding: 10px;
@@ -53,8 +55,13 @@ h1 {
   transition: background-color 0.3s ease;
 }
 
-.button-primary:hover {
-  background-color: #2980b9; /* Darker blue on hover */
+.logo {
+  width: 300px; /* Adjust the width as needed */
+  margin-right: 20px; /* Add some spacing between the image and the container */
+}
+
+.btn-primary:hover {
+  background-color: #c0392b; /* Darker red on hover */
 }
 
 .link {
@@ -64,13 +71,4 @@ h1 {
 
 .link:hover {
   text-decoration: underline; /* Underline on hover for links */
-}
-
-.error-msg {
-  display: none;
-  margin: 10px 0;
-  padding: 10px;
-  border-radius: 3px 3px 3px 3px;
-  color: #D8000C;
-  background-color: #FFBABA;
 }
