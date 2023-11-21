@@ -41,11 +41,12 @@ const clearDataButton = document.querySelector(".js-clear-data-btn");
 const analyzeDataBtn = document.querySelector(".js-analyze-data-btn");
 
 // Call uploadCSV function when the file input value changes
-uploadButton.addEventListener("click", function () {
-  fileInput.value = "";
-  updateAllScenarios();
-  populateTable();
-});
+// uploadButton.addEventListener("click", function (e) {
+//   uploadCSV(e, cb)
+//   fileInput.value = "";
+//   updateAllScenarios();
+//   populateTable();
+// });
 let allCategories, allScenarios;
 
 const scale = [
@@ -59,9 +60,11 @@ const scale = [
 function cb(categories, scenarios) {
   localStorage.setItem("categories", JSON.stringify(categories));
   localStorage.setItem("scenarios", JSON.stringify(scenarios));
+  updateAllScenarios();
+  populateTable();
 }
 
-fileInput.addEventListener("change", (e) => uploadCSV(e, cb));
+// fileInput.addEventListener("change", (e) => uploadCSV(e, cb));
 
 function populateCategoryForm(index) {
   allCategories = JSON.parse(localStorage.getItem("categories")) || [];
@@ -75,6 +78,7 @@ function populateCategoryForm(index) {
 }
 
 function deleteCategory(index) {
+  allCategories = JSON.parse(localStorage.getItem("categories")) || [];
   allCategories.splice(index, 1);
   localStorage.setItem("categories", JSON.stringify(allCategories));
   updateAllScenarios();
@@ -393,6 +397,8 @@ categoryForm.addEventListener("submit", (e) => {
 
 function populateTable() {
   const tableBody = document.querySelector(".js-table-body");
+  const tableHeader = document.querySelector("table.scenarios-table > thead");
+  tableHeader.innerHTML = "";
   tableBody.innerHTML = "";
   // Retrieve categories and scenarios from localStorage
   const categories = JSON.parse(localStorage.getItem("categories")) || [];
@@ -403,14 +409,14 @@ function populateTable() {
     const scenariosTable = document.querySelector(".scenarios-table");
     noScenariosAvailable.classList.add("hidden");
     scenariosTable.classList.remove("hidden");
-  }
+  
   // Create the header row with scenario names as columns
   const headerRow = document.createElement("tr");
   headerRow.innerHTML = "<th>Scenarios</th>";
   categories.forEach((category) => {
     headerRow.innerHTML += `<th>${category.categoryName}</th>`;
   });
-  tableBody.appendChild(headerRow);
+  tableHeader.appendChild(headerRow);
 
   // Iterate through categories and populate the table dynamically
   scenarios.forEach((scenario, i) => {
@@ -429,6 +435,7 @@ function populateTable() {
 
     tableBody.appendChild(row);
   });
+}
 }
 
 function plotGraph(categories, results) {
@@ -474,8 +481,10 @@ analyzeDataBtn.addEventListener("click", () => {
 
 function populateResults() {
   const rankingTable = document.querySelector(".js-ranking-table");
+  const tableHeader = rankingTable.querySelector("thead");
   const tableBody = rankingTable.querySelector(".js-table-body");
   tableBody.innerHTML = "";
+  tableHeader.innerHTML = ""
 
   // Retrieve categories and scenarios from localStorage
   const categories = JSON.parse(localStorage.getItem("categories")) || [];
@@ -506,7 +515,7 @@ function populateResults() {
   categories.forEach((category) => {
     headerRow.innerHTML += `<th>${category.categoryName}</th>`;
   });
-  tableBody.appendChild(headerRow);
+  tableHeader.appendChild(headerRow);
 
   // Iterate through categories and populate the table dynamically
   results.forEach((scenario) => {
@@ -521,17 +530,22 @@ function populateResults() {
 
     tableBody.appendChild(row);
   });
-  if (results.length >= 2) {
-    resultsInsights.classList.remove("hidden");
-    bestCaseScenario.textContent = JSON.stringify(results[0], undefined, 2);
-    worstCaseScenario.textContent = JSON.stringify(
-      results[results.length - 1],
-      undefined,
-      2
-    );
-  }
-
-  plotGraph(categories, results);
+   // Find the best and worst scenarios based on performance scores
+   const bestScenario = results[0];
+   const worstScenario = results[results.length - 1];
+ 
+   // Construct sentences for best and worst case scenarios
+   const bestCaseSentence = `${bestScenario.scenarioName} with a performance score of ${bestScenario.performanceScore.toFixed(2)}.`;
+   const worstCaseSentence = `${worstScenario.scenarioName} with a performance score of ${worstScenario.performanceScore.toFixed(2)}.`;
+ 
+   // Display sentences in the UI
+   bestCaseScenario.textContent = bestCaseSentence;
+   worstCaseScenario.textContent = worstCaseSentence;
+ 
+   if (results.length >= 2) {
+     resultsInsights.classList.remove("hidden");
+     plotGraph(categories, results);
+   }
 }
 
 addScenarioForm.addEventListener("submit", (e) => {
@@ -825,3 +839,43 @@ downloadButton.addEventListener("click", downloadCSV);
 
 updateAllScenarios();
 populateTable();
+
+const uploadBtn = document.getElementById("uploadBtn");
+const fileInputTT = document.getElementById("fileInput");
+
+uploadBtn.addEventListener("click", () => triggerFileInput());
+fileInputTT.addEventListener("change", (e) => handleFileSelect(e));
+function triggerFileInput() {
+  document.getElementById("fileInput").click();
+}
+
+function handleFileSelect(event) {
+  const fileInput = event.target;
+  const files = fileInput.files;
+
+  if (files.length > 0) {
+    const selectedFile = files[0];
+    console.log("Selected file:", selectedFile);
+    uploadCSV(event, cb);
+  }
+}
+
+var inputs = document.querySelectorAll('.file-upload')
+
+for (var i = 0, len = inputs.length; i < len; i++) {
+  customInput(inputs[i])
+}
+
+function customInput (el) {
+  const fileInput = el.querySelector('[type="file"]')
+  const label = el.querySelector('[data-js-label]')
+  
+  fileInput.onchange =
+  fileInput.onmouseout = function () {
+    if (!fileInput.value) return
+    
+    var value = fileInput.value.replace(/^.*[\\\/]/, '')
+    el.className += ' -chosen'
+    label.innerText = value
+  }
+}
