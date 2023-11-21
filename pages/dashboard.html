@@ -23,24 +23,18 @@
     </div>
   </header>
   <div class="importexport">
-    <h2 class="import">Import File</h2>
-    <h2 class="export">Export File</h2>
   </div>
   <div class="udcontainer">
-    <!-- <button class="js-hard-reset"> Reset </button> -->
-
     <div class="file-upload">
-      <!-- <input type="file" id="csvFile" accept=".csv" />
-        <button class="btn btn-primary" id="convertButton">Upload</button> -->
-      <span class='button' id="uploadBtn">Upload</span>&nbsp;&nbsp;
-      <!-- <button id="uploadBtn" class='uploadButton'>Upload</button> -->
+    <h2 class="import">Import File</h2>
+      <button class='btn btn-primary' id="uploadBtn">Upload</button>
       <input type="file" id="fileInput" accept=".csv">
-      <span class='label' data-js-label>No file selected</label>
+      <label class='label' data-js-label>No file selected</label>
     </div>
-    &nbsp;&nbsp;
     <div class="txt-download">
+    <h2 class="export">Export File</h2>
       <input type="text" id="fileNameInput" placeholder="Enter file name">
-      <button id="downloadCSV" class="btn btn-secondary">
+      <button id="downloadCSV" class="btn btn-primary">
         <i class="fa-solid fa-download"></i>
       </button>
     </div>
@@ -48,25 +42,37 @@
   <hr class="hr-1">
 
   <div class="cscontainer">
-    <div class="half">
-      <button class="btn btn-secondary modal-btn js-modal-btn">
-        Add Category
-      </button>
-      <h2>Categories</h2>
-      <p class="js-no-categories">No Categories available. Add categories or upload a file.</p>
-      <div class="all-categories js-all-categories hidden"></div>
+    <div class="half categories-creation-wrapper">
+      <div class="categories-tabs-wrapper">
+        <div class="categories-tabs-header">
+          <h2>Categories</h2>
+          <button class="btn btn-secondary modal-btn js-modal-btn">
+            Add Category
+          </button>
+      </div>
+        <p class="js-no-categories">No Categories available. Add categories or upload a file.</p>
+        <div class="all-categories js-all-categories hidden"></div>
+      </div>
+      <i class="fa-solid fa-arrow-right"></i>
+      <div id="categoryPieChart" class="pie-chart-container">
+        <span id="categoryError" class="error-message hidden"></span>
+      </div>
+      
     </div>
 
     <div class="half">
-      <button class="btn btn-secondary modal-btn js-modal-add-scenario-btn">
-        Add Scenario
-      </button>
+      <div class="scenarios-tabs-header">
+        <h2>Scenarios</h2>
+        <button class="btn btn-secondary modal-btn js-modal-add-scenario-btn">
+          Add Scenario
+        </button>
+      </div>
       <div class="scenarios-table-wrapper js-scenarios-table">
         <div class="scenarios-header-wrapper">
           <!-- Add this container in your HTML -->
         </div>
 
-        <h2>Scenarios</h2>
+       
         <p class="js-no-Scenarios">No Scenarios available</p>
 
         <table class="scenarios-table hidden">
@@ -81,7 +87,7 @@
   </div>
   <hr class="hr-1">
   <div class="button-container">
-    <button class="js-analyze-data-btn">Analyze Data</button>
+    <button class="btn btn-primary js-analyze-data-btn">Analyze Data</button>
     <button class="js-clear-data-btn">Clear Data</button>
   </div>
 
@@ -102,21 +108,21 @@
   <div class="results-insights js-results-insights hidden">
     <h2>Results Insights</h2>
 
-    <div class="weight-distribution js-wight-distribution">
+    <!-- <div class="weight-distribution js-wight-distribution">
       <label class="category-weight-label">Category Weight distribution</label>
-    </div>
-    <div class="performance-score js-performance-score">
-      <label class="performance-score-label">Scenario Performance Score</label>
-    </div>
+    </div> -->
 
     <div class="best-case-scenario js-best-case-scenario">
       <label class="best-case-scenario-label">Best Case Scenario</label>
-      <pre></pre>
+      <p></p>
     </div>
 
     <div class="worst-case-scenario js-worst-case-scenario">
       <label class="worst-case-scenario-label">Worst Case Scenario</label>
-      <pre></pre>
+      <p></p>
+    </div>
+    <div class="performance-score js-performance-score">
+      <label class="performance-score-label">Scenario Performance Score</label>
     </div>
   </div>
   </div> 

@@ -58,6 +58,8 @@ h1 {
 }
 
 .btn-primary {
+  background-color: #151284; /* Blue color for the button */
+  color: #fff; /* White text color */
   border: none;
   padding: 10px;
   border-radius: 3px;
