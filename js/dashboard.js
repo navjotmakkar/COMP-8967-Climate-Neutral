@@ -923,9 +923,9 @@ function clearAllData() {
   worstCaseScenario.textContent = "";
 
   // Clear weight distribution and performance score charts (replace these lines with your actual chart clearing logic)
-  const piChart = document.querySelector(".js-wight-distribution");
+  // const piChart = document.querySelector(".js-wight-distribution");
   const barChart = document.querySelector(".js-performance-score");
-  piChart.innerHTML = "";
+  // piChart.innerHTML = "";
   barChart.innerHTML = "";
 
   // Update UI
