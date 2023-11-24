@@ -15,11 +15,13 @@ const signInUser = (event) => {
     .signInWithEmailAndPassword(email.value, password.value)
     .then(() => {
         loginForm.reset()
+        localStorage.clear()
     })
     .catch((error) => {
       // alert(error.message)
       document.getElementById('errorMsg').style.display = 'block';
       loginForm.reset()
+      localStorage.clear()
     });
 };
 

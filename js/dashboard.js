@@ -68,6 +68,14 @@ const scale = [
   { value: 5, label: "Excellent" },
 ];
 
+const scaleDisplay = {
+  1: "Low",
+  2: "Below Average",
+  3: "Average",
+  4: "Good",
+  5: "Excellent",
+};
+
 function cb(categories, scenarios) {
   localStorage.setItem("categories", JSON.stringify(categories));
   localStorage.setItem("scenarios", JSON.stringify(scenarios));
@@ -118,10 +126,12 @@ document.addEventListener("DOMContentLoaded", () => {
         .querySelector("#evaluationType")
         .setAttribute("disabled", true);
       categorySubmitBtn.classList.add("hidden");
-      categorySubmitBtn.removeAttribute('type')
+      categorySubmitBtn.removeAttribute("type");
       categoryUpdateBtn.classList.remove("hidden");
-      categoryUpdateBtn.focus()
-      populateCategoryForm(parseInt(e.target.attributes["data-category-index"].value));
+      categoryUpdateBtn.focus();
+      populateCategoryForm(
+        parseInt(e.target.attributes["data-category-index"].value)
+      );
     } else if (e.target.classList.contains("js-trash-icon")) {
       deleteCategory(
         parseInt(e.target.attributes["data-category-index"].value)
@@ -130,6 +140,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   editScenario.addEventListener("click", (e) => {
+    allScenarios = JSON.parse(localStorage.getItem("scenarios")) || [];
     if (e.target.classList.contains("js-edit-scenario-icon")) {
       const index = parseInt(e.target.attributes["data-index"].value);
       openAddScenarioModel(allScenarios[index], index);
@@ -199,7 +210,11 @@ function initializeCategoriesVisualization() {
       showlegend: true,
     };
 
-    Plotly.newPlot("categoryPieChart", data, layout);
+    Plotly.newPlot("categoryPieChart", data, layout, {
+      staticPlot: true,
+      displayModeBar: false,
+      displaylogo: false,
+    });
   }
 
   function getCategoriesFromLocalStorage() {
@@ -316,8 +331,10 @@ function updateAllScenarios() {
         <label>${category.categoryName} - ${
         category.categoryWeight * 100
       }%</label>
+        <div class="icon-wrapper">
         <i class="fa-solid fa-pen-to-square fa-sm js-edit-icon" data-category-index=${i}></i>
         <i class="fa-solid fa-trash fa-sm js-trash-icon" data-category-index=${i}></i>
+        </div>
       </div>`;
     })
     .join("");
@@ -350,9 +367,9 @@ function openCategoryModel() {
   categoryForm.querySelector("#evaluationType").removeAttribute("disabled");
   categoryForm.reset();
   categorySubmitBtn.classList.remove("hidden");
-  categorySubmitBtn.focus()
+  categorySubmitBtn.focus();
   categoryUpdateBtn.classList.add("hidden");
-  categoryUpdateBtn.removeAttribute('type')
+  categoryUpdateBtn.removeAttribute("type");
 }
 
 modalBtn.addEventListener("click", () => {
@@ -494,7 +511,11 @@ categoryForm.addEventListener("submit", (e) => {
     categoryDirection: categoryDirection.value,
     evaluationType: evaluationType.value,
   };
-  if (e.target.querySelector("button[type='submit']").classList.contains("js-update-btn")) {
+  if (
+    e.target
+      .querySelector("button:not(.hidden)")
+      .classList.contains("js-update-btn")
+  ) {
     let indexToBeUpdated = undefined;
     const categoryToBeUpdated = categories.find((c, i) => {
       if (c.categoryName.toLowerCase() == categoryName.value.toLowerCase()) {
@@ -505,10 +526,7 @@ categoryForm.addEventListener("submit", (e) => {
     categories[indexToBeUpdated] = temp;
     localStorage.setItem("categories", JSON.stringify(categories));
   } else {
-    categories = [
-      ...categories,
-      temp
-    ];
+    categories = [...categories, temp];
     localStorage.setItem("categories", JSON.stringify(categories));
     updateScenarioForNewCategory(temp);
     // Close the modal after processing the input
@@ -554,7 +572,13 @@ function populateTable() {
       // Populate category data for each scenario
 
       categories.forEach((category) => {
-        row.innerHTML += `<td>${scenario[category.categoryName] || "-"}</td>`;
+        if (category.evaluationType == "descriptive") {
+          row.innerHTML += `<td>${
+            scaleDisplay[scenario[category.categoryName]] || "-"
+          }</td>`;
+        } else {
+          row.innerHTML += `<td>${scenario[category.categoryName] || "-"}</td>`;
+        }
       });
 
       tableBody.appendChild(row);
@@ -563,16 +587,16 @@ function populateTable() {
 }
 
 function plotGraph(categories, results) {
-  const piChart = document.querySelector(".js-wight-distribution");
+  // const piChart = document.querySelector(".js-wight-distribution");
   const barChart = document.querySelector(".js-performance-score");
 
-  const piData = [
-    {
-      values: categories.map((c) => c.categoryWeight),
-      labels: categories.map((c) => c.categoryName),
-      type: "pie",
-    },
-  ];
+  // const piData = [
+  //   {
+  //     values: categories.map((c) => c.categoryWeight),
+  //     labels: categories.map((c) => c.categoryName),
+  //     type: "pie",
+  //   },
+  // ];
 
   const piLayout = {
     height: 500,
@@ -587,8 +611,15 @@ function plotGraph(categories, results) {
     },
   ];
 
-  window.Plotly.newPlot(barChart, barData, piLayout);
-  window.Plotly.newPlot(piChart, piData, piLayout);
+  window.Plotly.newPlot(barChart, barData, piLayout, {
+    staticPlot: true,
+    displayModeBar: false,
+    displayModeBar: false,
+    displaylogo: false,
+  });
+  // window.Plotly.newPlot(piChart, piData, piLayout, {staticPlot: true,
+  //   displayModeBar: false,
+  //   displaylogo: false});
 }
 
 analyzeDataBtn.addEventListener("click", () => {
@@ -600,6 +631,7 @@ analyzeDataBtn.addEventListener("click", () => {
     const rankingTable = document.querySelector(".js-ranking-table");
     noResultsAvailable.classList.remove("hidden");
     rankingTable.classList.add("hidden");
+    alert("Scenarios count should be more than One!")
   }
 });
 
@@ -622,10 +654,16 @@ function populateResults() {
     rankingTable.classList.remove("hidden");
   }
 
+  const evlCategories = categories.filter(
+    (cat) => cat.evaluationType == "descriptive"
+  );
   results = results.map((result) => {
     const scenario = scenarios.find(
       (s) => s.scenarioName == result.scenarioName
     );
+    evlCategories.forEach((cat) => {
+      scenario[cat.categoryName] = scaleDisplay[scenario[cat.categoryName]];
+    });
     return { ...result, ...scenario };
   });
 
@@ -690,10 +728,17 @@ addScenarioForm.addEventListener("submit", (e) => {
     const input = element.querySelector("input, select");
     temp[label.textContent] = input.value;
   });
-  if (e.target.querySelector("button[type='submit']").classList.contains("js-update-scenario-btn")) {
-    const index = e.target.querySelector("button[type='submit']").attributes["data-index"].value;
+  if (
+    e.target
+      .querySelector("button:not(.hidden)")
+      .classList.contains("js-add-scenario-submit-btn")
+  ) {
+    localStorage.setItem("scenarios", JSON.stringify([...scenarios, temp]));
+  } else {
+    const index = e.target.querySelector(".js-update-scenario-btn").attributes[
+      "data-index"
+    ].value;
     scenarios[index] = { ...scenarios[index], ...temp };
-    console.log(scenarios);
     localStorage.setItem("scenarios", JSON.stringify(scenarios));
     const categoryNameInput = document.querySelector(
       "form.js-add-scenario-form #scenarioName"
@@ -701,9 +746,6 @@ addScenarioForm.addEventListener("submit", (e) => {
     const updateScenarioBtn = document.querySelector(".js-update-scenario-btn");
     updateScenarioBtn.classList.add("hidden");
     jsAddScenarioSubmitBtn.classList.remove("hidden");
-  } else {
-
-    localStorage.setItem("scenarios", JSON.stringify([...scenarios, temp]));
   }
   handleAddCategoryModelClose();
   handleClearForm(addScenarioForm);
@@ -971,7 +1013,7 @@ function validateWeights(categories) {
     return {
       isValid: false,
       message:
-        "Error: The sum of weights for all categories must be equal to 1(100%).",
+        "Error: The sum of weights for all categories must be equal to (100%).",
     };
   }
   return { isValid: true };

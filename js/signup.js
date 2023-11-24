@@ -14,9 +14,11 @@ function createUser(email, password) {
     .createUserWithEmailAndPassword(email, password)
     .then((userCredential) => {
       alert("User Created successfully!");
+      localStorage.clear()
       signUpForm.reset()
     })
     .catch((error) => {
+      localStorage.clear()
       alert(error.message)
       signUpForm.reset()
     });

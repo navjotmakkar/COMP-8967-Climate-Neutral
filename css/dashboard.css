@@ -12,7 +12,9 @@
   margin-right: auto;
   margin-left: auto;
 } */
-
+*{
+  box-sizing: border-box;
+}
 .udcontainer {
   display: flex;
   justify-content: space-between;
@@ -232,7 +234,7 @@ hr.hr-1 {
   /* table-layout: fixed; */
 }
 
-.all-categories .category-tab > i {
+/* .all-categories .category-tab > i {
   opacity: 0;
   font-size: 0px;
   display: initial;
@@ -247,36 +249,24 @@ hr.hr-1 {
 .all-categories .category-tab:hover > i {
   opacity: 1;
   width: fit-content;
-  /* width: 0; */
   font-size: 15px;
   transition: all 0.3s;
   margin: 0 2px;
   cursor: pointer;
-  /* word-break: break-all; */
 }
 
 .all-categories .category-tab {
-  /* display: flex; */
-  /* padding: 5px 10px;  */
-  /* flex: 1 0 auto; */
-  /* border: 1px solid #28a745; */
+  position: relative;
   border-radius: 5px;
-  /* background-color: lightgreen; */
   color: black;
   font-size: 18px;
   font-weight: 800;
-  /* color: black; */
   text-align: center;
   align-items: center;
-  /* flex: 1 0 calc(10% - 10px); */
-  /* Adjust the percentage as needed */
   box-sizing: border-box;
   padding: 10px;
   word-break: break-all;
-  /* overflow:hidden;
-  white-space: nowrap;
-  height:auto; */
-}
+} */
 
 .modal-content .form-element {
   display: flex;
@@ -419,14 +409,12 @@ td {
   transform: scale(1.02, 1.04);
   background-color: #a4e2b3;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-
 }
 
 .worst-case-scenario:hover {
   transform: scale(1.02, 1.04);
   background-color: #e1a8a8;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-
 }
 
 .add-scenario-form-container {
@@ -677,4 +665,65 @@ input[type="text"]:focus {
 
 .hidden {
   display: none;
+}
+.category-tab {
+  box-sizing: border-box;
+  position: relative;
+  border-radius: 5px;
+  color: black;
+  font-size: 18px;
+  font-weight: 800;
+  text-align: left;
+  align-items: center;
+  box-sizing: border-box;
+  padding: 10px;
+  word-break: break-all;
+  display: flex;
+  justify-content: space-between;
+
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.category-tab label {
+  /* flex-grow: 1; */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: clip; /* No ellipsis by default */
+  transition: text-overflow 0.3s ease;
+}
+
+.icon-wrapper {
+  position: absolute; /* Overlay positioning */
+  right: 0px;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0; /* Initially hidden */
+  transition: opacity 0.3s ease;
+  display: flex;
+  align-items: center;
+  z-index: 10; /* Above the tab content */
+  border-radius: 0 5px 5px 0;
+}
+
+.icon-wrapper > i {
+  font-size: 15px;
+  cursor: pointer;
+  padding: 5px;
+  margin-left: 5px;
+}
+
+.category-tab:hover {
+  background-color: #f2f2f2;
+}
+
+.category-tab:hover .icon-wrapper {
+  opacity: 1;
+  background: #ffffffa1;
+  height: 100%;
+}
+
+.category-tab:hover label {
+  width: 70%;
+  text-overflow: ellipsis; /* Apply ellipsis on hover */
 }
