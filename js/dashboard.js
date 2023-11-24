@@ -94,6 +94,8 @@ function populateCategoryForm(index) {
   categoryWeight.value = allCategories[index].categoryWeight;
   const categoryDirection = categoryForm.querySelector("#categoryDirection");
   categoryDirection.value = allCategories[index].categoryDirection;
+  const categoryEvaluation = categoryForm.querySelector("#evaluationType");
+  categoryEvaluation.value = allCategories[index].evaluationType;
 }
 
 function deleteCategory(index) {
@@ -384,7 +386,7 @@ function createInputField(type, id, value = "") {
 function createSelectField(id, options, value = "") {
   let selectField = `<select class="js-input" id="${id}" value="${value}" required="true">`;
   options.forEach((option) => {
-    selectField += `<option value="${option.value}">${option.label}</option>`;
+    selectField += `<option value="${option.value}" ${option.value === value && "selected"}>${option.label}</option>`;
   });
   selectField += "</select>";
   return selectField;
@@ -406,7 +408,7 @@ function openAddScenarioModel(scenario, index) {
         value = updatedScenario[category.categoryName] || "";
         inputField = createInputField("number", id, value);
       } else {
-        value = updatedScenario[category.categoryName] || 1;
+        value = parseInt( Object.keys(scaleDisplay).find(key => scaleDisplay[key] === scaleDisplay[ updatedScenario[category.categoryName]])) || 1;
         inputField = createSelectField(id, scale, value);
       }
     } else {
@@ -631,7 +633,7 @@ analyzeDataBtn.addEventListener("click", () => {
     const rankingTable = document.querySelector(".js-ranking-table");
     noResultsAvailable.classList.remove("hidden");
     rankingTable.classList.add("hidden");
-    alert("Scenarios count should be more than One!")
+    alert("Scenarios count should be more than One!");
   }
 });
 

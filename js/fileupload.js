@@ -95,6 +95,7 @@ function uploadCSV(event, cb) {
 
     //   localStorage.setItem('categories', JSON.stringify(categories))
     //   localStorage.setItem('scenarios', JSON.stringify(scenarios))
+    document.querySelector("#fileInput").value = ""
     cb(categories, scenarios);
   };
 

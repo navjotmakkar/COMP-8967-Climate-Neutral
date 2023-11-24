@@ -702,7 +702,7 @@ input[type="text"]:focus {
   transition: opacity 0.3s ease;
   display: flex;
   align-items: center;
-  z-index: 10; /* Above the tab content */
+  z-index: 1; /* Above the tab content */
   border-radius: 0 5px 5px 0;
 }
 
