@@ -21,10 +21,8 @@ const jsAddScenarioSubmitBtn = document.querySelector(
 );
 const modmaBtn = document.querySelector(".js-modma-btn");
 const resultsInsights = document.querySelector(".js-results-insights");
-const bestCaseScenario = document.querySelector(".js-best-case-scenario > pre");
-const worstCaseScenario = document.querySelector(
-  ".js-worst-case-scenario > pre"
-);
+const bestCaseScenario = document.querySelector(".js-best-case-scenario > p");
+const worstCaseScenario = document.querySelector(".js-worst-case-scenario > p");
 const categoryUpdateBtn = document.querySelector(".js-update-btn");
 const categorySubmitBtn = document.querySelector(".js-submit-btn");
 const hardReset = document.querySelector(".js-hard-reset");
@@ -49,6 +47,19 @@ const analyzeDataBtn = document.querySelector(".js-analyze-data-btn");
 // });
 let allCategories, allScenarios;
 
+const colors = [
+  "#ff6384",
+  "#36a2eb",
+  "#ffcd56",
+  "#4bc0c0",
+  "#9966ff",
+  "#ff9f40",
+  "#ff9ff3",
+  "#f368e0",
+  "#48dbfb",
+  "#1dd1a1",
+  // Add more colors if you expect more than 10 categories
+];
 const scale = [
   { value: 1, label: "Low" },
   { value: 2, label: "Below Average" },
@@ -56,6 +67,14 @@ const scale = [
   { value: 4, label: "Good" },
   { value: 5, label: "Excellent" },
 ];
+
+const scaleDisplay = {
+  1: "Low",
+  2: "Below Average",
+  3: "Average",
+  4: "Good",
+  5: "Excellent",
+};
 
 function cb(categories, scenarios) {
   localStorage.setItem("categories", JSON.stringify(categories));
@@ -75,6 +94,8 @@ function populateCategoryForm(index) {
   categoryWeight.value = allCategories[index].categoryWeight;
   const categoryDirection = categoryForm.querySelector("#categoryDirection");
   categoryDirection.value = allCategories[index].categoryDirection;
+  const categoryEvaluation = categoryForm.querySelector("#evaluationType");
+  categoryEvaluation.value = allCategories[index].evaluationType;
 }
 
 function deleteCategory(index) {
@@ -107,8 +128,12 @@ document.addEventListener("DOMContentLoaded", () => {
         .querySelector("#evaluationType")
         .setAttribute("disabled", true);
       categorySubmitBtn.classList.add("hidden");
+      categorySubmitBtn.removeAttribute("type");
       categoryUpdateBtn.classList.remove("hidden");
-      populateCategoryForm(e.target.attributes["data-category-index"].value);
+      categoryUpdateBtn.focus();
+      populateCategoryForm(
+        parseInt(e.target.attributes["data-category-index"].value)
+      );
     } else if (e.target.classList.contains("js-trash-icon")) {
       deleteCategory(
         parseInt(e.target.attributes["data-category-index"].value)
@@ -117,6 +142,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   editScenario.addEventListener("click", (e) => {
+    allScenarios = JSON.parse(localStorage.getItem("scenarios")) || [];
     if (e.target.classList.contains("js-edit-scenario-icon")) {
       const index = parseInt(e.target.attributes["data-index"].value);
       openAddScenarioModel(allScenarios[index], index);
@@ -127,8 +153,125 @@ document.addEventListener("DOMContentLoaded", () => {
       deleteScenario(index);
     }
   });
+
+  initializeCategoriesVisualization();
 });
 
+function initializeCategoriesVisualization() {
+  function applyCategoryTabColors(categories, isInvalid) {
+    categories.forEach((category, index) => {
+      let color = isInvalid ? "red" : colors[index % colors.length]; // Red if invalid, else cycle through colors
+      let categoryTabs = document.querySelectorAll(
+        `.category-tab[data-category-index="${index}"]`
+      );
+      categoryTabs.forEach((tab) => {
+        tab.style.backgroundColor = color;
+      });
+    });
+  }
+
+  function displayError(message) {
+    const errorElement = document.getElementById("categoryError");
+    errorElement.textContent = message;
+    if (message) {
+      errorElement.classList.remove("hidden");
+    } else {
+      errorElement.classList.add("hidden");
+    }
+  }
+
+  function generatePieChart(categories, totalWeight) {
+    let isInvalid = totalWeight > 1;
+    let remainingWeight = totalWeight < 1 ? 1 - totalWeight : 0;
+
+    let data = [
+      {
+        values: isInvalid
+          ? [100]
+          : categories
+              .map((c) => c.weight * 100)
+              .concat(remainingWeight > 0 ? [remainingWeight * 100] : []),
+        labels: isInvalid
+          ? ["Invalid Weight"]
+          : categories
+              .map((c) => c.name)
+              .concat(remainingWeight > 0 ? ["Remaining"] : []),
+        type: "pie",
+        marker: {
+          colors: isInvalid
+            ? ["red"]
+            : categories
+                .map((_, index) => colors[index % colors.length])
+                .concat(remainingWeight > 0 ? ["red"] : []),
+        },
+      },
+    ];
+
+    var layout = {
+      title: "Category Distribution",
+      showlegend: true,
+    };
+
+    Plotly.newPlot("categoryPieChart", data, layout, {
+      staticPlot: true,
+      displayModeBar: false,
+      displaylogo: false,
+    });
+  }
+
+  function getCategoriesFromLocalStorage() {
+    let storedData = JSON.parse(localStorage.getItem("categories")) || [];
+    return storedData.map((c) => ({
+      name: c.categoryName,
+      weight: parseFloat(c.categoryWeight),
+    }));
+  }
+  function adjustGridLayout(categories) {
+    const categoriesCreationWrapper = document.querySelector(
+      ".cscontainer > .categories-creation-wrapper"
+    );
+    const categoriesTabWrapper = document.querySelector(
+      ".categories-tabs-wrapper"
+    );
+    if (categoriesCreationWrapper) {
+      categoriesCreationWrapper.style.gridTemplateColumns =
+        categories.length === 0 ? "100% 0 0" : "58% 1% 38%";
+      categoriesTabWrapper.style.minHeight =
+        categories.length === 0 ? "100px" : "300px";
+    }
+  }
+  function hideElementsIfNoCategories(categories) {
+    const pieChartElement = document.getElementById("categoryPieChart");
+    const arrowIcon = document.querySelector(".fa-arrow-right");
+
+    if (categories.length === 0) {
+      if (pieChartElement) pieChartElement.style.display = "none";
+      if (arrowIcon) arrowIcon.style.display = "none";
+    } else {
+      if (pieChartElement) pieChartElement.style.display = "block";
+      if (arrowIcon) arrowIcon.style.display = "inline-block"; // or 'block' depending on your layout
+    }
+    adjustGridLayout(categories);
+  }
+  let categories = getCategoriesFromLocalStorage();
+  hideElementsIfNoCategories(categories);
+
+  if (categories.length === 0) return; // Exit the function if no categories
+  let totalWeight = categories.reduce((acc, cur) => acc + cur.weight, 0);
+
+  if (totalWeight > 1) {
+    displayError("Total weight of categories exceeds 100%.");
+    applyCategoryTabColors(categories, true);
+  } else if (totalWeight < 1) {
+    displayError("Total weight of categories is less than 100%.");
+    applyCategoryTabColors(categories, false);
+  } else {
+    displayError(""); // No error
+    applyCategoryTabColors(categories, false);
+  }
+
+  generatePieChart(categories, totalWeight);
+}
 // hardReset.addEventListener("click", () => {
 //   localStorage.setItem("categories", JSON.stringify(categories));
 //   localStorage.setItem("scenarios", JSON.stringify(scenarios));
@@ -190,8 +333,10 @@ function updateAllScenarios() {
         <label>${category.categoryName} - ${
         category.categoryWeight * 100
       }%</label>
+        <div class="icon-wrapper">
         <i class="fa-solid fa-pen-to-square fa-sm js-edit-icon" data-category-index=${i}></i>
         <i class="fa-solid fa-trash fa-sm js-trash-icon" data-category-index=${i}></i>
+        </div>
       </div>`;
     })
     .join("");
@@ -215,6 +360,7 @@ function updateAllScenarios() {
       scenariosTable.classList.add("hidden");
     }
   }
+  initializeCategoriesVisualization();
 }
 
 function openCategoryModel() {
@@ -223,7 +369,9 @@ function openCategoryModel() {
   categoryForm.querySelector("#evaluationType").removeAttribute("disabled");
   categoryForm.reset();
   categorySubmitBtn.classList.remove("hidden");
+  categorySubmitBtn.focus();
   categoryUpdateBtn.classList.add("hidden");
+  categoryUpdateBtn.removeAttribute("type");
 }
 
 modalBtn.addEventListener("click", () => {
@@ -238,7 +386,7 @@ function createInputField(type, id, value = "") {
 function createSelectField(id, options, value = "") {
   let selectField = `<select class="js-input" id="${id}" value="${value}" required="true">`;
   options.forEach((option) => {
-    selectField += `<option value="${option.value}">${option.label}</option>`;
+    selectField += `<option value="${option.value}" ${option.value === value && "selected"}>${option.label}</option>`;
   });
   selectField += "</select>";
   return selectField;
@@ -260,7 +408,7 @@ function openAddScenarioModel(scenario, index) {
         value = updatedScenario[category.categoryName] || "";
         inputField = createInputField("number", id, value);
       } else {
-        value = updatedScenario[category.categoryName] || 1;
+        value = parseInt( Object.keys(scaleDisplay).find(key => scaleDisplay[key] === scaleDisplay[ updatedScenario[category.categoryName]])) || 1;
         inputField = createSelectField(id, scale, value);
       }
     } else {
@@ -365,10 +513,14 @@ categoryForm.addEventListener("submit", (e) => {
     categoryDirection: categoryDirection.value,
     evaluationType: evaluationType.value,
   };
-  if (e.submitter.classList.contains("js-update-btn")) {
+  if (
+    e.target
+      .querySelector("button:not(.hidden)")
+      .classList.contains("js-update-btn")
+  ) {
     let indexToBeUpdated = undefined;
     const categoryToBeUpdated = categories.find((c, i) => {
-      if (c.categoryName == categoryName.value) {
+      if (c.categoryName.toLowerCase() == categoryName.value.toLowerCase()) {
         indexToBeUpdated = i;
         return true;
       }
@@ -376,15 +528,7 @@ categoryForm.addEventListener("submit", (e) => {
     categories[indexToBeUpdated] = temp;
     localStorage.setItem("categories", JSON.stringify(categories));
   } else {
-    categories = [
-      ...categories,
-      {
-        categoryName: categoryName.value,
-        categoryWeight: categoryWeight.value,
-        categoryDirection: categoryDirection.value,
-        evaluationType: evaluationType.value,
-      },
-    ];
+    categories = [...categories, temp];
     localStorage.setItem("categories", JSON.stringify(categories));
     updateScenarioForNewCategory(temp);
     // Close the modal after processing the input
@@ -409,46 +553,52 @@ function populateTable() {
     const scenariosTable = document.querySelector(".scenarios-table");
     noScenariosAvailable.classList.add("hidden");
     scenariosTable.classList.remove("hidden");
-  
-  // Create the header row with scenario names as columns
-  const headerRow = document.createElement("tr");
-  headerRow.innerHTML = "<th>Scenarios</th>";
-  categories.forEach((category) => {
-    headerRow.innerHTML += `<th>${category.categoryName}</th>`;
-  });
-  tableHeader.appendChild(headerRow);
 
-  // Iterate through categories and populate the table dynamically
-  scenarios.forEach((scenario, i) => {
-    const row = document.createElement("tr");
-    row.innerHTML = `<td class="scenario-name-table-cell"> 
+    // Create the header row with scenario names as columns
+    const headerRow = document.createElement("tr");
+    headerRow.innerHTML = "<th>Scenarios</th>";
+    categories.forEach((category) => {
+      headerRow.innerHTML += `<th>${category.categoryName}</th>`;
+    });
+    tableHeader.appendChild(headerRow);
+
+    // Iterate through categories and populate the table dynamically
+    scenarios.forEach((scenario, i) => {
+      const row = document.createElement("tr");
+      row.innerHTML = `<td class="scenario-name-table-cell"> 
       <span>${scenario.scenarioName} </span>    
         <i class="fa-solid fa-pen-to-square fa-sm js-edit-scenario-icon" data-index=${i}></i>
         <i class="fa-solid fa-trash fa-sm js-trash-scenario-icon" data-index=${i}></i>
     </td>`;
 
-    // Populate category data for each scenario
+      // Populate category data for each scenario
 
-    categories.forEach((category) => {
-      row.innerHTML += `<td>${scenario[category.categoryName] || "-"}</td>`;
+      categories.forEach((category) => {
+        if (category.evaluationType == "descriptive") {
+          row.innerHTML += `<td>${
+            scaleDisplay[scenario[category.categoryName]] || "-"
+          }</td>`;
+        } else {
+          row.innerHTML += `<td>${scenario[category.categoryName] || "-"}</td>`;
+        }
+      });
+
+      tableBody.appendChild(row);
     });
-
-    tableBody.appendChild(row);
-  });
-}
+  }
 }
 
 function plotGraph(categories, results) {
-  const piChart = document.querySelector(".js-wight-distribution");
+  // const piChart = document.querySelector(".js-wight-distribution");
   const barChart = document.querySelector(".js-performance-score");
 
-  const piData = [
-    {
-      values: categories.map((c) => c.categoryWeight),
-      labels: categories.map((c) => c.categoryName),
-      type: "pie",
-    },
-  ];
+  // const piData = [
+  //   {
+  //     values: categories.map((c) => c.categoryWeight),
+  //     labels: categories.map((c) => c.categoryName),
+  //     type: "pie",
+  //   },
+  // ];
 
   const piLayout = {
     height: 500,
@@ -463,8 +613,15 @@ function plotGraph(categories, results) {
     },
   ];
 
-  window.Plotly.newPlot(barChart, barData, piLayout);
-  window.Plotly.newPlot(piChart, piData, piLayout);
+  window.Plotly.newPlot(barChart, barData, piLayout, {
+    staticPlot: true,
+    displayModeBar: false,
+    displayModeBar: false,
+    displaylogo: false,
+  });
+  // window.Plotly.newPlot(piChart, piData, piLayout, {staticPlot: true,
+  //   displayModeBar: false,
+  //   displaylogo: false});
 }
 
 analyzeDataBtn.addEventListener("click", () => {
@@ -476,6 +633,7 @@ analyzeDataBtn.addEventListener("click", () => {
     const rankingTable = document.querySelector(".js-ranking-table");
     noResultsAvailable.classList.remove("hidden");
     rankingTable.classList.add("hidden");
+    alert("Scenarios count should be more than One!");
   }
 });
 
@@ -484,7 +642,7 @@ function populateResults() {
   const tableHeader = rankingTable.querySelector("thead");
   const tableBody = rankingTable.querySelector(".js-table-body");
   tableBody.innerHTML = "";
-  tableHeader.innerHTML = ""
+  tableHeader.innerHTML = "";
 
   // Retrieve categories and scenarios from localStorage
   const categories = JSON.parse(localStorage.getItem("categories")) || [];
@@ -498,10 +656,16 @@ function populateResults() {
     rankingTable.classList.remove("hidden");
   }
 
+  const evlCategories = categories.filter(
+    (cat) => cat.evaluationType == "descriptive"
+  );
   results = results.map((result) => {
     const scenario = scenarios.find(
       (s) => s.scenarioName == result.scenarioName
     );
+    evlCategories.forEach((cat) => {
+      scenario[cat.categoryName] = scaleDisplay[scenario[cat.categoryName]];
+    });
     return { ...result, ...scenario };
   });
 
@@ -530,22 +694,26 @@ function populateResults() {
 
     tableBody.appendChild(row);
   });
-   // Find the best and worst scenarios based on performance scores
-   const bestScenario = results[0];
-   const worstScenario = results[results.length - 1];
- 
-   // Construct sentences for best and worst case scenarios
-   const bestCaseSentence = `${bestScenario.scenarioName} with a performance score of ${bestScenario.performanceScore.toFixed(2)}.`;
-   const worstCaseSentence = `${worstScenario.scenarioName} with a performance score of ${worstScenario.performanceScore.toFixed(2)}.`;
- 
-   // Display sentences in the UI
-   bestCaseScenario.textContent = bestCaseSentence;
-   worstCaseScenario.textContent = worstCaseSentence;
- 
-   if (results.length >= 2) {
-     resultsInsights.classList.remove("hidden");
-     plotGraph(categories, results);
-   }
+  // Find the best and worst scenarios based on performance scores
+  const bestScenario = results[0];
+  const worstScenario = results[results.length - 1];
+
+  // Construct sentences for best and worst case scenarios
+  const bestCaseSentence = `${
+    bestScenario.scenarioName
+  } with a performance score of ${bestScenario.performanceScore.toFixed(2)}.`;
+  const worstCaseSentence = `${
+    worstScenario.scenarioName
+  } with a performance score of ${worstScenario.performanceScore.toFixed(2)}.`;
+
+  // Display sentences in the UI
+  bestCaseScenario.textContent = bestCaseSentence;
+  worstCaseScenario.textContent = worstCaseSentence;
+
+  if (results.length >= 2) {
+    resultsInsights.classList.remove("hidden");
+    plotGraph(categories, results);
+  }
 }
 
 addScenarioForm.addEventListener("submit", (e) => {
@@ -562,10 +730,17 @@ addScenarioForm.addEventListener("submit", (e) => {
     const input = element.querySelector("input, select");
     temp[label.textContent] = input.value;
   });
-  if (e.submitter.classList.contains("js-update-scenario-btn")) {
-    const index = e.submitter.attributes["data-index"].value;
+  if (
+    e.target
+      .querySelector("button:not(.hidden)")
+      .classList.contains("js-add-scenario-submit-btn")
+  ) {
+    localStorage.setItem("scenarios", JSON.stringify([...scenarios, temp]));
+  } else {
+    const index = e.target.querySelector(".js-update-scenario-btn").attributes[
+      "data-index"
+    ].value;
     scenarios[index] = { ...scenarios[index], ...temp };
-    console.log(scenarios);
     localStorage.setItem("scenarios", JSON.stringify(scenarios));
     const categoryNameInput = document.querySelector(
       "form.js-add-scenario-form #scenarioName"
@@ -573,8 +748,6 @@ addScenarioForm.addEventListener("submit", (e) => {
     const updateScenarioBtn = document.querySelector(".js-update-scenario-btn");
     updateScenarioBtn.classList.add("hidden");
     jsAddScenarioSubmitBtn.classList.remove("hidden");
-  } else {
-    localStorage.setItem("scenarios", JSON.stringify([...scenarios, temp]));
   }
   handleAddCategoryModelClose();
   handleClearForm(addScenarioForm);
@@ -600,7 +773,11 @@ function calculateMODMA() {
   const scenarioValidationResult = validateScenarios(scenarios);
   const weightValidationResult = validateWeights(categories);
 
-  if (!categoryValidationResult.isValid || !scenarioValidationResult.isValid || !weightValidationResult.isValid) {
+  if (
+    !categoryValidationResult.isValid ||
+    !scenarioValidationResult.isValid ||
+    !weightValidationResult.isValid
+  ) {
     // Display error messages for failed validation checks
     if (!categoryValidationResult.isValid) {
       alert(categoryValidationResult.message);
@@ -780,17 +957,19 @@ function clearAllData() {
   resultsInsights.classList.add("hidden");
 
   // Clear and hide best case scenario
-  const bestCaseScenario = document.querySelector(".js-best-case-scenario > pre");
+  const bestCaseScenario = document.querySelector(".js-best-case-scenario > p");
   bestCaseScenario.textContent = "";
 
   // Clear and hide worst case scenario
-  const worstCaseScenario = document.querySelector(".js-worst-case-scenario > pre");
+  const worstCaseScenario = document.querySelector(
+    ".js-worst-case-scenario > p"
+  );
   worstCaseScenario.textContent = "";
 
   // Clear weight distribution and performance score charts (replace these lines with your actual chart clearing logic)
-  const piChart = document.querySelector(".js-wight-distribution");
+  // const piChart = document.querySelector(".js-wight-distribution");
   const barChart = document.querySelector(".js-performance-score");
-  piChart.innerHTML = "";
+  // piChart.innerHTML = "";
   barChart.innerHTML = "";
 
   // Update UI
@@ -800,7 +979,9 @@ function clearAllData() {
 
 function validateCategories(categories) {
   // Check if there are duplicate category names
-  const uniqueCategoryNames = new Set(categories.map(category => category.categoryName));
+  const uniqueCategoryNames = new Set(
+    categories.map((category) => category.categoryName)
+  );
   if (uniqueCategoryNames.size !== categories.length) {
     return {
       isValid: false,
@@ -812,7 +993,9 @@ function validateCategories(categories) {
 
 function validateScenarios(scenarios) {
   // Check if there are duplicate scenario names
-  const uniqueScenarioNames = new Set(scenarios.map(scenario => scenario.scenarioName));
+  const uniqueScenarioNames = new Set(
+    scenarios.map((scenario) => scenario.scenarioName)
+  );
   if (uniqueScenarioNames.size !== scenarios.length) {
     return {
       isValid: false,
@@ -824,11 +1007,15 @@ function validateScenarios(scenarios) {
 
 function validateWeights(categories) {
   // Check if the sum of weights is equal to 1
-  const sumOfWeights = categories.reduce((sum, category) => sum + parseFloat(category.categoryWeight), 0);
+  const sumOfWeights = categories.reduce(
+    (sum, category) => sum + parseFloat(category.categoryWeight),
+    0
+  );
   if (sumOfWeights !== 1) {
     return {
       isValid: false,
-      message: "Error: The sum of weights for all categories must be equal to 1(100%).",
+      message:
+        "Error: The sum of weights for all categories must be equal to (100%).",
     };
   }
   return { isValid: true };
@@ -860,22 +1047,21 @@ function handleFileSelect(event) {
   }
 }
 
-var inputs = document.querySelectorAll('.file-upload')
+var inputs = document.querySelectorAll(".file-upload");
 
 for (var i = 0, len = inputs.length; i < len; i++) {
-  customInput(inputs[i])
+  customInput(inputs[i]);
 }
 
-function customInput (el) {
-  const fileInput = el.querySelector('[type="file"]')
-  const label = el.querySelector('[data-js-label]')
-  
-  fileInput.onchange =
-  fileInput.onmouseout = function () {
-    if (!fileInput.value) return
-    
-    var value = fileInput.value.replace(/^.*[\\\/]/, '')
-    el.className += ' -chosen'
-    label.innerText = value
-  }
+function customInput(el) {
+  const fileInput = el.querySelector('[type="file"]');
+  const label = el.querySelector("[data-js-label]");
+
+  fileInput.onchange = fileInput.onmouseout = function () {
+    if (!fileInput.value) return;
+
+    var value = fileInput.value.replace(/^.*[\\\/]/, "");
+    el.className += " -chosen";
+    label.innerText = value;
+  };
 }

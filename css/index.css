@@ -39,7 +39,7 @@ h1 {
 #login_form > input {
   padding: 10px;
   margin-bottom: 15px;
-  border: 1px solid #fff; 
+  border: 1px solid #eee; 
   border-radius: 3px;
   font-size: var(--medium-font-size);
   transition: border-color 0.3s ease-in-out;
@@ -55,23 +55,6 @@ h1 {
 
 #login_form > input:hover {
   border-color: var(--accent-color); /* Change border color on hover */
-}
-
-.btn-primary {
-  border: none;
-  padding: 10px;
-  border-radius: 3px;
-  background-color: var(--primary-color);
-  background-color: darkturquoise;
-  color: #000;
-  cursor: pointer;
-  transition: background-color 0.3s ease-in-out;
-  font-size: var(--medium-font-size);
-}
-
-.btn-primary:hover {
-  background-color: var(--accent-color); /* Change background color on hover */
-  border-color: black;
 }
 
 .logo {

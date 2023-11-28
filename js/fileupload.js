@@ -58,38 +58,44 @@ function uploadCSV(event, cb) {
     let categoryKeys = [];
     let scenariosKeys = [];
 
-    lines.forEach((line, index) => {
-      const values = line.split(",").map((value) => value.trim());
+    try {
+      lines.forEach((line, index) => {
+        const values = line.split(",").map((value) => value.trim());
+  
+        if (values[0] === "Category") {
+          isCategoryTable = true;
+          if (index == 0) {
+            categoryKeys = values.slice(1);
+          } else {
+            let temp = {};
+            const categoryValues = values.slice(1);
+            categoryKeys.forEach((key, index) => {
+              temp[key] = categoryValues[index].replaceAll('"', "");
+            });
+            categories.push(temp);
+          }
+        } else if (values[0] === "Scenarios") {
+          isScenarioTable = true;
+          if (isCategoryTable && isCategoryTable) {
+            scenariosKeys = values.slice(1);
+            isCategoryTable = false;
+          } else if (isScenarioTable && !isCategoryTable) {
+            let temp = {};
+            const scenarioValues = values.slice(1);
+            scenariosKeys.forEach((key, index) => {
+              temp[key] = scenarioValues[index].replaceAll('"', "");
+            });
+            scenarios.push(temp);
+          }
+        }
+      });
+    } catch (error) {
+      alert("Error while parsing .csv")
+    }
 
-      if (values[0] === "Category") {
-        isCategoryTable = true;
-        if (index == 0) {
-          categoryKeys = values.slice(1);
-        } else {
-          let temp = {};
-          const categoryValues = values.slice(1);
-          categoryKeys.forEach((key, index) => {
-            temp[key] = categoryValues[index].replaceAll('"', "");
-          });
-          categories.push(temp);
-        }
-      } else if (values[0] === "Scenarios") {
-        isScenarioTable = true;
-        if (isCategoryTable && isCategoryTable) {
-          scenariosKeys = values.slice(1);
-          isCategoryTable = false;
-        } else if (isScenarioTable && !isCategoryTable) {
-          let temp = {};
-          const scenarioValues = values.slice(1);
-          scenariosKeys.forEach((key, index) => {
-            temp[key] = scenarioValues[index].replaceAll('"', "");
-          });
-          scenarios.push(temp);
-        }
-      }
-    });
     //   localStorage.setItem('categories', JSON.stringify(categories))
     //   localStorage.setItem('scenarios', JSON.stringify(scenarios))
+    document.querySelector("#fileInput").value = ""
     cb(categories, scenarios);
   };
 
