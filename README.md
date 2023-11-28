@@ -42,3 +42,10 @@ The MODM analysis in Climate Neutral operates as follows:
    - For negative category direction: Linear score = ((x - min) / (max - min)) * 100 
 
 **3. Scenario Ranking:** After normalization, the application calculates the summation of all category values for each scenario. The scenarios are then ranked in descending order based on these summations, providing users with a clear understanding of the most favorable options. 
+
+### How to run the code
+1. Install and configure node on your system
+2. Clone this repository
+3. Open cmd in teh project directory and run command "live-server"
+
+Link to user manual- https://github.com/navjotmakkar/COMP-8967-Climate-Neutral/blob/main/manual/USER%20MANUAL.pdf
