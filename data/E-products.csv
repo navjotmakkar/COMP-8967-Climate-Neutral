@@ -1,0 +1,12 @@
+Category,categoryName,categoryWeight,categoryDirection,evaluationType,
+Category,Carbon Footprint,0.25,negative,descriptive,
+Category,Energy Efficiency,0.2,positive,numerical,
+Category,Recyclability,0.3,positive,descriptive,
+Category,Packaging Sustainability,0.25,positive,numerical,
+,,,,,
+Scenarios,scenarioName,Carbon Footprint,Energy Efficiency,Recyclability,Packaging Sustainability
+Scenarios,GreenPhone X,1,80,3,75
+Scenarios,EcoTech Y,2,60,5,90
+Scenarios,EnviroGadget Z,1,85,3,80
+Scenarios,SustainaSmart S,3,90,1,85
+Scenarios,EarthFriendly T,4,50,2,70

@@ -1,0 +1,12 @@
+Category,categoryName,categoryWeight,categoryDirection,evaluationType
+Category,"Cost","0.25","negative","numerical"
+Category,"Battery Capacity (kWh)","0.25","positive","numerical"
+Category,"Design","0.25","positive","descriptive"
+Category,"Autonomous Features","0.25","positive","descriptive"
+
+Scenarios,scenarioName,Cost,Battery Capacity (kWh),Design,Autonomous Features
+Scenarios,"Tesla Model 3 ","35000","60","1","1"
+Scenarios,"Nissan Leaf","28000","40","3","2"
+Scenarios,"Audi e-Tron ","45000","80","4","5"
+Scenarios,"Chevrolet Bolt ","38000","60","5","4"
+Scenarios,"BMW i3","32000","50","3","4"
