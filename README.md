@@ -46,6 +46,6 @@ The MODM analysis in Climate Neutral operates as follows:
 ### How to run the code
 1. Install and configure node on your system
 2. Clone this repository
-3. Open cmd in teh project directory and run command "live-server"
+3. Open cmd in the project directory and run command "live-server"
 
 Link to user manual- https://github.com/navjotmakkar/COMP-8967-Climate-Neutral/blob/main/manual/USER%20MANUAL.pdf
