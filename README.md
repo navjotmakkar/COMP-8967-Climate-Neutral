@@ -2,14 +2,14 @@
 
 ### Introduction 
 
-This web application, referred to as "Climate Neutral," will empower users to perform Multi-Objective Decision-Making (MODM) analyses, aiding them in evaluating and selecting the most optimal scenario among various alternatives, taking into account multiple critical factors. It is aimed at assisting users in making multi-objective decisions related to climate change and environmental issues. 
+This web application will empower users to perform Multi-Objective Decision-Making (MODM) analyses, aiding them in evaluating and selecting the most optimal scenario among various alternatives, taking into account multiple critical factors. It is aimed at assisting users in making multi-objective decisions related to climate change and environmental issues. 
 
 In various decision-making scenarios, especially those pertaining to climate change and environmental sustainability, individuals and organizations often encounter complex choices. These choices involve multiple factors or categories and multiple scenarios for each category. Selecting the best course of action becomes challenging due to the multitude of variables involved. The MODM method simplifies this process by providing a systematic way to analyze and suggest the best scenario based on the defined categories and their associated factors. 
 
 
 ### Features of the Climate Neutral Web Application 
 
-The Climate Neutral web application will include the following key features: 
+The MODM web application will include the following key features: 
 
 **1. Authentication:** The application will offer basic user authentication using Firebase to ensure that only authorized users can access its features. 
 
@@ -31,7 +31,7 @@ The Climate Neutral web application will include the following key features:
 
 ### Working of MODM Analysis 
 
-The MODM analysis in Climate Neutral operates as follows: 
+The MODM analysis will operates as follows: 
 
 **1. Conversion of Descriptive Categories:** Descriptive category values, such as "Very Low," "Low," "Medium," "High," and "Very High," are converted into their corresponding numerical equivalents for consistency. (e.g., Very Low = 2, Low = 4, Medium = 6, High = 8, Very High = 10) 
 
